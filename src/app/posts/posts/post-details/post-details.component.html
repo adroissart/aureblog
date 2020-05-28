@@ -22,8 +22,8 @@
         <label for="post-tags">Work</label>
         <input class="form-control" name="post-tags" [(ngModel)]="post.tags" placeholder="Tag"/>
       </div>
-      <button class="btn btn-primary" *ngIf="!post._id" (click)="createpost(post)">Create</button>
-      <button class="btn btn-info" *ngIf="post._id" (click)="updatepost(post)">Update</button>
-      <button class="btn btn-danger" *ngIf="post._id" (click)="deletepost(post._id)">Delete</button>
+      <button class="btn btn-primary" *ngIf="!post._id" (click)="createPost(post)">Create</button>
+      <button class="btn btn-info" *ngIf="post._id" (click)="updatePost(post)">Update</button>
+      <button class="btn btn-danger" *ngIf="post._id" (click)="deletePost(post._id)">Delete</button>
     </form>
   </div>

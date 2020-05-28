@@ -9,14 +9,14 @@
           {{post.title}}
         </li>
       </ul>
-      <button class="btn btn-warning" (click)="createNewCPost()">New</button>
+      <button class="btn btn-warning" (click)="createNewPost()">New</button>
     </div>
     <div class="col-md-5 col-md-offset-2">
       <post-details
         [post]="selectedPost"
         [createHandler]="addPost"
         [updateHandler]="updatePost"
-        [deleteHandler]="deletePost>">
+        [deleteHandler]="deletePost">
       </post-details>
     </div>
   </div>

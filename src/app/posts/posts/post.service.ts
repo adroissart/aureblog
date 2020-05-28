@@ -1,44 +1,40 @@
 import { Injectable } from '@angular/core';
 import { Post } from './post';
-import { Http, Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable()
 export class PostService {
     private postsUrl = '/api/posts';
 
-    constructor (private http: Http) {}
+    constructor (private http: HttpClient) {}
 
     // get("/api/posts")
     getPosts(): Promise<void | Post[]> {
-      return this.http.get(this.postsUrl)
+      return this.http.get<Post[]>(this.postsUrl)
                  .toPromise()
-                 .then(response => response.json() as Post[])
                  .catch(this.handleError);
     }
 
     // post("/api/posts")
     createPost(newpost: Post): Promise<void | Post> {
-      return this.http.post(this.postsUrl, newpost)
+      return this.http.post<Post>(this.postsUrl, newpost)
                  .toPromise()
-                 .then(response => response.json() as Post)
                  .catch(this.handleError);
     }
 
     // get("/api/posts/:id") endpoint not used by Angular app
     // delete("/api/posts/:id")
     deletePost(delpostId: String): Promise<void | String> {
-      return this.http.delete(this.postsUrl + '/' + delpostId)
+      return this.http.delete<String>(this.postsUrl + '/' + delpostId)
                  .toPromise()
-                 .then(response => response.json() as String)
                  .catch(this.handleError);
     }
 
     // put("/api/posts/:id")
     updatePost(putpost: Post): Promise<void | Post> {
       var putUrl = this.postsUrl + '/' + putpost._id;
-      return this.http.put(putUrl, putpost)
+      return this.http.put<Post>(putUrl, putpost)
                  .toPromise()
-                 .then(response => response.json() as Post)
                  .catch(this.handleError);
     }
 
