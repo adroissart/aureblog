@@ -22,9 +22,6 @@ export class PostListComponent implements OnInit {
       .getPosts()
       .then((posts: Post[]) => {
         this.posts = posts.map((post) => {
-          if (!post.tags) {
-            post.tags = []
-          }
           return post;
         });
       });
@@ -44,8 +41,7 @@ export class PostListComponent implements OnInit {
     var post: Post = {
       title: '',
       date: '',
-      content: '',
-      tags: []
+      content: ''
     };
 
     // By default, a newly-created contact will have the selected state.
