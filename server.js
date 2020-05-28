@@ -56,15 +56,15 @@ function handleError(res, reason, message, code) {
   });
   
   app.post("/api/posts", function(req, res) {
-    var newContact = req.body;
-    newContact.createDate = new Date();
+    var newPost = req.body;
+    newPost.createDate = new Date();
   
-    if (!req.body.name) {
-      handleError(res, "Invalid user input", "Must provide a name.", 400);
+    if (!req.body.title) {
+      handleError(res, "Invalid user input", "Must provide a title.", 400);
     } else {
-      db.collection(POSTS_COLLECTION).insertOne(newContact, function(err, doc) {
+      db.collection(POSTS_COLLECTION).insertOne(newPost, function(err, doc) {
         if (err) {
-          handleError(res, err.message, "Failed to create new contact.");
+          handleError(res, err.message, "Failed to create new post.");
         } else {
           res.status(201).json(doc.ops[0]);
         }
