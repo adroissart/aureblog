@@ -18,17 +18,26 @@ export class PostListComponent implements OnInit {
   constructor(private postService: PostService) { }
 
   ngOnInit() {
+     console.log("post list is initializing")
      this.postService
       .getPosts()
       .then((posts: Post[]) => {
-        this.posts = posts.map((post) => {
-          return post;
-        });
+        if (Array.isArray(posts)) {
+          this.posts = posts.map((post) => {
+            return post;
+          });
+        }
       });
   }
 
+  private errorhandling(error) {
+    
+  }
+
   private getIndexOfPost = (postId: String) => {
+    console.log("to delete post id is :"+postId)
     return this.posts.findIndex((post) => {
+      console.log("post id is :"+post._id);
       return post._id === postId;
     });
   }
@@ -49,8 +58,11 @@ export class PostListComponent implements OnInit {
   }
 
   deletePost = (postId: String) => {
+    console.log("deletePost is called with id: "+postId);
     var idx = this.getIndexOfPost(postId);
+    console.log("idx is "+idx);
     if (idx !== -1) {
+      console.log("splicing");
       this.posts.splice(idx, 1);
       this.selectPost(null);
     }
@@ -70,5 +82,10 @@ export class PostListComponent implements OnInit {
       this.selectPost(post);
     }
     return this.posts;
+  }
+
+  onLogin(){
+    console.log("onlogin");
+    this.createNewPost();
   }
 }
