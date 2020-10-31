@@ -42,7 +42,7 @@ export class PostService {
       let errMsg = (error.message) ? error.message :
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
       if (error.status == 401) {
-        console.log("no authentication");
+        console.log("PostService::handleError: no authentication");
       }
       //console.error(errMsg); // log to console instead
       return errMsg;

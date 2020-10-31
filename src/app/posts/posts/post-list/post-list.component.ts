@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Post } from '../post';
 import { PostService } from '../post.service';
 import { PostDetailsComponent } from '../post-details/post-details.component';
+import { AuthService } from '../../../auth.service';
 
 @Component({
   selector: 'post-list',
@@ -14,24 +15,41 @@ export class PostListComponent implements OnInit {
 
   posts: Post[]
   selectedPost: Post
+  isLoggedIn : boolean = false;
 
-  constructor(private postService: PostService) { }
+  constructor(private authService : AuthService, private postService: PostService) { }
 
   ngOnInit() {
-     console.log("post list is initializing")
-     this.postService
-      .getPosts()
-      .then((posts: Post[]) => {
-        if (Array.isArray(posts)) {
-          this.posts = posts.map((post) => {
-            return post;
-          });
-        }
-      });
+     console.log("PostListComponent::ngOnInit: start")
+     this.authService.currentUserData.subscribe((message : string) => this.handleLoginEvent(message))
   }
 
   private errorhandling(error) {
     
+  }
+
+  handleLoginEvent(message: string) {
+    let newIsLoggedIn = (message !== '')
+    console.log("PostListComponent::handleLoginEvent: message is ["+message+"] current isLoggedIn["+this.isLoggedIn+"] new isLoggedIn["+newIsLoggedIn+"]")
+    if (newIsLoggedIn !== this.isLoggedIn) {
+      this.isLoggedIn = newIsLoggedIn
+      this.reloadPosts()
+    } 
+  }
+
+  reloadPosts() {
+    this.postService
+    .getPosts()
+    .then((posts: Post[]) => {
+      if (Array.isArray(posts)) {
+        this.posts = posts.map((post) => {
+          return post;
+        });
+      } else {
+        console.log("PostListComponent::reloadPosts: no post")
+        this.posts =[]
+      }
+    });
   }
 
   private getIndexOfPost = (postId: String) => {

@@ -13,51 +13,42 @@ export class LoginComponent implements OnInit {
 
   userEmail : String;
   userPassword : String;
-  isHidden : boolean;
+  isLoggedIn : boolean = false;
+  userName : String = 'loading';
 
   constructor(private authService : AuthService, private router : Router) { }
 
   ngOnInit() {
-    this.isHidden=true;
-    this.authService.isLoggedIn().then((response) => {
-      if (response === "authenticated!") {
-        console.log("i show you");
-        this.isHidden=false;
-      } else {
-        console.log("i am not showing you");
-        this.isHidden=true;
-      }
-    }).catch((error) => {
-      if (error.status === 401) {
-        this.isHidden=false;
-      }
-      console.log("ca merde"+error.status)
-    });
+      this.isLoggedIn = false
+      this.userName = 'loading'
+      this.authService.currentUserData.subscribe(message => this.updateLoginInfo(message))
+  }
+
+  updateLoginInfo(message: string) {
+    this.userName=message
+    this.isLoggedIn = (this.userName !== '')
+    console.log("LoginComponent::updateLoginInfo: hello "+this.userName)
   }
 
   login(){
-    this.authService.validate(this.userEmail, this.userPassword)
-    .then((response) => {
-      this.authService.setUserInfo({'user' : response['user']});
-      this.isHidden=true;
+    this.authService.validate(this.userEmail.valueOf(), this.userPassword.valueOf())
+    .then((response: NiceUser) => {
+      this.authService.setUserInfo(response.username);
       this.router.navigate(['home'])
       .then(() => {
-        console.log("i am reloading")
-        window.location.reload();
+        console.log("LoginComponent::login: i am reloading")
       });
-
     })
     
   }
 
   logout(){
     this.authService.logout().then((response) => {
-      this.authService.setUserInfo(null);
-      this.isHidden=false;
       this.router.navigate(['home'])
       .then(() => {
-        console.log("i am reloading after logout")
-        window.location.reload();
+        console.log("LoginComponent::logout: i am reloading after logout")
+        this.userEmail=""
+        this.userPassword=""
       })
     });
 

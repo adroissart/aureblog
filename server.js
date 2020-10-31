@@ -1,6 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
-var expressSession = require('express-session')
+var expressSession = require('express-session');
 //const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(expressSession);
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
@@ -17,7 +17,6 @@ var posts;
 
 var app = express();
 app.use(bodyParser.json());
-
 var distDir = __dirname + "/dist/aureblog";
 app.use(express.static(distDir));
 
@@ -42,14 +41,18 @@ const verifyCallback = (username, password, done) => {
   User.findOne({ username: username })
       .then((user) => {
 
-          if (!user) { return done(null, false) }
+          if (!user) { 
+            console.log("no user"+username);
+            return done("Unknown user", false) 
+          }
           
           const isValid = validPassword(password, user.hash, user.salt);
           
           if (isValid) {
               return done(null, user);
           } else {
-              return done(null, false);
+              console.log("no password"+password);
+              return done('Incorrect password', false);
           }
       })
       .catch((err) => {   
@@ -61,22 +64,16 @@ const strategy = new LocalStrategy(verifyCallback);
 passport.use(strategy);
 app.use(passport.initialize());
 app.use(passport.session());
+db.once('open', function() {
+  // we're connected
+    // Initialize the app.
+    var server = app.listen(process.env.PORT || 8080, function () {
+      var port = server.address().port;
+      console.log("App now running on port", port);
+    });
+});
 
-
-
-isAuth = (req, res, next) => {
-  if (req.isAuthenticated()) {
-      console.log("we are authenticted")
-      next();
-  } else {
-      console.log("we are not authenticated")
-      req.session.returnTo = req.url;
-      const link = '<h1>please authenticate</h1><a href=\'/login\'>login</a>'
-      res.status(401).json({"link":link});
-  }
-}
-
-
+//////////////////////////////////////////////////
 
 
 function validPassword(password, hash, salt) {
@@ -95,146 +92,90 @@ passport.deserializeUser((userId, done) => {
       .catch(err => done(err))
 });
 
-const isLoggedIn = (req, res, next) => {
-  console.log("is logged in")
-  if(req.isAuthenticated()){
-      return next()
-  }
-  return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"})
-}
-
-
-db.once('open', function() {
-  // we're connected!
-    
-    // Initialize the app.
-    var server = app.listen(process.env.PORT || 8080, function () {
-      var port = server.address().port;
-      console.log("App now running on port", port);
-    });
-});
-
-
-// Connect to the database before starting the application server.
-//mongoconnection.MongoClient.connect(process.env.MONGOconnection_URI || "mongoconnection://localhost:27017/test", function (err, client) {
-//  if (err) {
-//    console.log(err);
-//    process.exit(1);
-//  }
-
-//  // Save database object from the callback for reuse.
-//  db = client.db();
-//  console.log("Database connection ready");
-
-//  // Initialize the app.
-//  var server = app.listen(process.env.PORT || 8080, function () {
-//    var port = server.address().port;
-//    console.log("App now running on port", port);
-//  });
-//});
-
-
-
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
-    console.log("ERROR: " + reason);
-    res.status(code || 500).json({"error": message});
-  };
+  console.log("ERROR: " + reason);
+  res.status(code || 500).json({"error": message});
+};
 
-app.get('/test',
+isAuth = (req, res, next) => {
+  if (req.isAuthenticated()) {
+      console.log("we are authenticted")
+      next();
+  } else {
+      console.log("we are not authenticated")
+      req.session.returnTo = req.url;
+      //const link = '<h1>please authenticate</h1><a href=\'/login\'>login</a>'
+      res.status(401); //.json({"link":link});
+  }
+}
+
+/////////////////////////////////////////////////////
+// login functions
+app.get('/api/checkauth',
     isAuth, (req, res, next) => {
-      console.log("are we authenticated?");
-      res.status(200).json({"state":"authenticated!"});
+      console.log("api/checkauth: user is "+req.user);
+      //res.status(200).json({message:"authenticated!"});
+      res.json({username: req.user.username})
     }
 );
-app.get('/test3',
-    passport.authenticate('local', { successRedirect: '/',
-                                      failureRedirect: '/test4'})
-);
-app.get('/test4', function(req, res) {
-  console.log("test4");
-  res.send("failure on login")
-});
-app.get('/test2',function(req, res) {
-  console.log("test2");
-  const axios = require('axios')
 
-  axios.post('http://localhost:5000/login', {
-    username: 'admin',
-    password: 'admin'
-  })
-  .then((res) => {
-    //console.log(`statusCode: ${res.statusCode}`)
-    //console.log(res)
-    console.log('OK')
-  })
-  .catch((error) => {
-    console.error(error)
-  })
-});
-// register
 app.get('/api/register', (req, res, next) => {
-
   const form = '<h1>Register Page</h1><form method="post" action="register">\
                   Enter Username:<br><input type="text" name="username">\
                   <br>Enter Password:<br><input type="password" name="password">\
                   <br><br><input type="submit" value="Submit"></form>';
 
   res.send(form);
-  
 });
+
 app.post('/api/register', (req, res, next) => {
   //const saltHash = genPassword(req.body.pw);
-  
   //const salt = saltHash.salt;
   //const hash = saltHash.hash;
-
   const newUser = new User({
       username: req.body.username,
       hash: req.body.password,
       salt: "salt",
       admin: true
   });
-
   newUser.save()
       .then((user) => {
           console.log(user);
       });
-
-  res.redirect('/login');
+  res.redirect('/');
 });
-// login
-app.post('/api/login',
-  passport.authenticate('local', 
-//      { failureRedirect: '/login',
-//        successReturnToOrRedirect: '/' }
-  ),
-  function(req, res) {
-    // If this function gets called, authentication was successful.
-    // `req.user` contains the authenticated user.
-    // res.redirect('/users/' + req.user.username);
-    console.log("logged user "+req.user)
-    res.json("user authenticated")
+
+const auth = () => {
+  return (req, res, next) => {
+      passport.authenticate('local', (error, user, info) => {
+          console.log("error:"+error)
+          if (error) {
+            res.status(401).json(error);
+          } else {
+            req.login(user, function(error) {
+                if (error) return next(error);
+                next();
+            });
+          }
+      })(req, res, next);
   }
-);
-app.get('/api/login', (req, res, next) => {
-   
-  const form = '<h1>Login Page</h1><form method="POST" action="/login">\
-  Enter Username:<br><input type="text" name="username">\
-  <br>Enter Password:<br><input type="password" name="password">\
-  <br><br><input type="submit" value="Submit"></form>';
+}
 
-  res.send(form);
-
-
+app.post('/api/login', auth() , (req, res) => {
+  console.log("going through /api/login")
+  res.status(200).json({username : req.user.username});
 });
+
 app.get('/api/logout', function(req, res){
   console.log("trying to logout")
   req.logout();
   //res.redirect('/');
   res.json("logged out");
 });
-  
+
+  //////////////////////////////////////////////////////
+  // functional apis
   /*  "/api/posts"
    *    GET: finds all posts
    *    POST: creates a new contact
@@ -242,13 +183,6 @@ app.get('/api/logout', function(req, res){
   
   app.get("/api/posts", isAuth, async function(req, res) {
     console.log("entering get api/posts");
-//    db.collection(POSTS_COLLECTION).find({}).toArray(function(err, docs) {
-//      if (err) {
-//        handleError(res, err.message, "Failed to get posts.");
-//      } else {
-//        res.status(200).json(docs);
-//      }
-//    });
     try {
       posts = await Post.find({});
       console.log(posts);
@@ -269,20 +203,6 @@ app.get('/api/logout', function(req, res){
     } catch (err) {
       res.status(500).send(err);
     }
- //   var newPost = req.body;
- //   newPost.createDate = new Date();
- // 
- //   if (!req.body.title) {
- //     handleError(res, "Invalid user input", "Must provide a title.", 400);
- //   } else {
- //     db.collection(POSTS_COLLECTION).insertOne(newPost, function(err, doc) {
- //       if (err) {
- //         handleError(res, err.message, "Failed to create new post.");
- //       } else {
- //         res.status(201).json(doc.ops[0]);
- //       }
- //     });
- //   }
   });
   
   /*  "/api/posts/:id"
@@ -292,13 +212,6 @@ app.get('/api/logout', function(req, res){
    */
   
   app.get("/api/posts/:id", async function(req, res) {
- //   db.collection(POSTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
- //     if (err) {
- //       handleError(res, err.message, "Failed to get contact");
- //     } else {
- //       res.status(200).json(doc);
- //     }
- //   });
       console.log("getting single post ");
       try {
         const post = await Post.findById(req.params.id)
@@ -318,17 +231,6 @@ app.get('/api/logout', function(req, res){
     } catch (err) {
       res.status(500).send(err)
     }
-//   var updateDoc = req.body;
-//    delete updateDoc._id;
-//  
-//    db.collection(POSTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
-//      if (err) {
-//        handleError(res, err.message, "Failed to update contact");
-//      } else {
-//        updateDoc._id = req.params.id;
-//        res.status(200).json(updateDoc);
-//      }
-//    });
   });
   
   app.delete("/api/posts/:id", async function(req, res) {
@@ -340,15 +242,8 @@ app.get('/api/logout', function(req, res){
     } catch (err) {
       res.status(500).send(err)
     }
-//    db.collection(POSTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
-//      if (err) {
-//        handleError(res, err.message, "Failed to delete contact");
-//      } else {
-//        res.status(200).json(req.params.id);
-//      }
-//    });
   });
-
+//////////////////////////////////////////////////
 // posts API ROUTES BELOW
 app.get('/*', function(req,res) {
   console.log("redirect to angular")
