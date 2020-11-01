@@ -68,7 +68,8 @@ export class PostListComponent implements OnInit {
     var post: Post = {
       title: '',
       date: '',
-      content: ''
+      content: '',
+      rating: 1
     };
 
     // By default, a newly-created contact will have the selected state.
@@ -95,15 +96,20 @@ export class PostListComponent implements OnInit {
 
   updatePost = (post: Post) => {
     var idx = this.getIndexOfPost(post._id);
+    console.log("idx is "+idx);
     if (idx !== -1) {
       this.posts[idx] = post;
-      this.selectPost(post);
     }
+    this.selectPost(null);
     return this.posts;
   }
 
   onLogin(){
     console.log("onlogin");
     this.createNewPost();
+  }
+
+  unselectPost(){
+    this.selectPost(null);
   }
 }

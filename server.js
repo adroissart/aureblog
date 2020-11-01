@@ -1,7 +1,6 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var expressSession = require('express-session');
-//const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(expressSession);
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 const mongoose = require('./config/database');
@@ -106,7 +105,7 @@ isAuth = (req, res, next) => {
       console.log("we are not authenticated")
       req.session.returnTo = req.url;
       //const link = '<h1>please authenticate</h1><a href=\'/login\'>login</a>'
-      res.status(401); //.json({"link":link});
+      res.status(401).json({"link":link});
   }
 }
 
@@ -147,6 +146,7 @@ app.post('/api/register', (req, res, next) => {
 });
 
 const auth = () => {
+
   return (req, res, next) => {
       passport.authenticate('local', (error, user, info) => {
           console.log("error:"+error)

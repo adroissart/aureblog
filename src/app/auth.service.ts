@@ -10,6 +10,8 @@ export class AuthService {
 
   private userDataSource = new BehaviorSubject('');
   currentUserData = this.userDataSource.asObservable();
+  private errorMessageSource = new BehaviorSubject('');
+  currentErrorMessage = this.errorMessageSource.asObservable();
   
 
   constructor(private http : HttpClient) {
@@ -26,10 +28,10 @@ export class AuthService {
   }
 
   public checkLoggedIn() {
-    console.log("AuthService::checkLoggedIn: start")
+    console.log("AuthService::checkLoggedIn: start");
     this.http.get<NiceUser>('/api/checkauth').toPromise()
       .catch((error : any) => this.handleError(error))
-      .then((user : NiceUser) => this.afterCheckAuth(user))
+      .then((user : NiceUser) => this.afterCheckAuth(user));
   }
 
   private afterCheckAuth(user : NiceUser) {
@@ -44,7 +46,7 @@ export class AuthService {
 
   public validate(email: string, password: string) {
     return this.http.post<NiceUser>('/api/login', {'username' : email, 'password' : password}).toPromise()
-      .catch(this.handleLoginError)
+      .catch(error =>this.handleLoginError(error))
   }
 
   public logout() {
@@ -63,9 +65,9 @@ export class AuthService {
   }
 
   private handleLoginError(error: any) {
-    console.log(error.error)
-    alert("pb in authentication: "+error.error)
-    let emptyUser : NiceUser = { username : '' }
-    return emptyUser
+    console.log(error.error);
+    this.errorMessageSource.next(error.error)
+    let emptyUser : NiceUser = { username : '' };
+    return emptyUser;
   }
 }

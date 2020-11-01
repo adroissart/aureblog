@@ -22,7 +22,8 @@ const User = mongoose.model('User', UserSchema);
 const postSchema = new mongoose.Schema({
     title: String,
     date: String,
-    content: String  
+    content: String,
+    rating: Number  
 });
 const Post = mongoose.model('Post', postSchema);
 

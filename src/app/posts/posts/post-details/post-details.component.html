@@ -1,22 +1,32 @@
 <div *ngIf="post" class="row">
     <div class="col-md-12">
-      <h2 *ngIf="post._id">post Details</h2>
-      <h2 *ngIf="!post._id">New post</h2>
+      <h2 *ngIf="post._id">Review Details</h2>
+      <h2 *ngIf="!post._id">New Review</h2>
     </div>
   </div>
   <div *ngIf="post" class="row">
     <form class="col-md-12">
       <div class="form-group">
         <label for="post-title">Title</label>
-        <input class="form-control" name="post-title" [(ngModel)]="post.title" placeholder="Title"/>
+        <input type="text" class="form-control" name="post-title" [(ngModel)]="post.title" placeholder="Title"/>
       </div>
       <div class="form-group">
-        <label for="post-date">Email</label>
-        <input class="form-control" name="post-date" [(ngModel)]="post.date" placeholder="2020-05-28"/>
+        <label for="post-date">View Date</label>
+        <input type="date" class="form-control" name="post-date" [(ngModel)]="post.date" placeholder="2020-05-28"/>
       </div>
       <div class="form-group">
-        <label for="post-content">Mobile</label>
-        <input class="form-control" name="post-content" [(ngModel)]="post.content" placeholder="Content"/>
+        <label for="post-content">Text</label>
+        <textarea type="text" class="form-control" name="post-content" [(ngModel)]="post.content" placeholder="Content" rows="4"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="post-rating">Rating</label>
+        <select class="form-control" [(ngModel)]="post.rating" name="post-rating">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
       </div>
       <button class="btn btn-primary" *ngIf="!post._id" (click)="createPost(post)">Create</button>
       <button class="btn btn-info" *ngIf="post._id" (click)="updatePost(post)">Update</button>

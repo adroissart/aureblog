@@ -14,14 +14,17 @@ export class LoginComponent implements OnInit {
   userEmail : String;
   userPassword : String;
   isLoggedIn : boolean = false;
-  userName : String = 'loading';
+  userName : string = 'loading';
+  errorMessage : string;
 
   constructor(private authService : AuthService, private router : Router) { }
 
   ngOnInit() {
+    console.log("LoginComponent::ngOnInit: start")
+      this.authService.currentUserData.subscribe(message => this.updateLoginInfo(message))
+      this.authService.currentErrorMessage.subscribe(message => this.errorMessage = message)
       this.isLoggedIn = false
       this.userName = 'loading'
-      this.authService.currentUserData.subscribe(message => this.updateLoginInfo(message))
   }
 
   updateLoginInfo(message: string) {
@@ -34,6 +37,9 @@ export class LoginComponent implements OnInit {
     this.authService.validate(this.userEmail.valueOf(), this.userPassword.valueOf())
     .then((response: NiceUser) => {
       this.authService.setUserInfo(response.username);
+      if (this.userName != '') {
+        this.errorMessage=''
+      }
       this.router.navigate(['home'])
       .then(() => {
         console.log("LoginComponent::login: i am reloading")
