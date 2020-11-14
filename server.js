@@ -27,7 +27,7 @@ app.use(expressSession({
   saveUninitialized: false,
   store: sessionStore,
   cookie: {
-      maxAge: 1000 * 60 * 60 * 24 // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+    maxAge: 1000 * 60 * 60 * 24 // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
   }
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,38 +38,38 @@ const LocalStrategy = require('passport-local').Strategy;
 const verifyCallback = (username, password, done) => {
 
   User.findOne({ username: username })
-      .then((user) => {
+    .then((user) => {
 
-          if (!user) { 
-            console.log("no user"+username);
-            return done("Unknown user", false) 
-          }
-          
-          const isValid = validPassword(password, user.hash, user.salt);
-          
-          if (isValid) {
-              return done(null, user);
-          } else {
-              console.log("no password"+password);
-              return done('Incorrect password', false);
-          }
-      })
-      .catch((err) => {   
-          done(err);
-      });
+      if (!user) {
+        console.log("no user" + username);
+        return done("Unknown user", false)
+      }
+
+      const isValid = validPassword(password, user.hash, user.salt);
+
+      if (isValid) {
+        return done(null, user);
+      } else {
+        console.log("no password" + password);
+        return done('Incorrect password', false);
+      }
+    })
+    .catch((err) => {
+      done(err);
+    });
 
 }
 const strategy = new LocalStrategy(verifyCallback);
 passport.use(strategy);
 app.use(passport.initialize());
 app.use(passport.session());
-db.once('open', function() {
+db.once('open', function () {
   // we're connected
-    // Initialize the app.
-    var server = app.listen(process.env.PORT || 8080, function () {
-      var port = server.address().port;
-      console.log("App now running on port", port);
-    });
+  // Initialize the app.
+  var server = app.listen(process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+  });
 });
 
 //////////////////////////////////////////////////
@@ -85,38 +85,38 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((userId, done) => {
   User.findById(userId)
-      .then((user) => {
-          done(null, user);
-      })
-      .catch(err => done(err))
+    .then((user) => {
+      done(null, user);
+    })
+    .catch(err => done(err))
 });
 
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
   console.log("ERROR: " + reason);
-  res.status(code || 500).json({"error": message});
+  res.status(code || 500).json({ "error": message });
 };
 
 isAuth = (req, res, next) => {
   if (req.isAuthenticated()) {
-      console.log("we are authenticted")
-      next();
+    console.log("we are authenticted")
+    next();
   } else {
-      console.log("we are not authenticated")
-      req.session.returnTo = req.url;
-      //const link = '<h1>please authenticate</h1><a href=\'/login\'>login</a>'
-      res.status(401).json({"link":link});
+    console.log("we are not authenticated")
+    req.session.returnTo = req.url;
+    //const link = '<h1>please authenticate</h1><a href=\'/login\'>login</a>'
+    res.status(401).json({ "link": link });
   }
 }
 
 /////////////////////////////////////////////////////
 // login functions
 app.get('/api/checkauth',
-    isAuth, (req, res, next) => {
-      console.log("api/checkauth: user is "+req.user);
-      //res.status(200).json({message:"authenticated!"});
-      res.json({username: req.user.username})
-    }
+  isAuth, (req, res, next) => {
+    console.log("api/checkauth: user is " + req.user);
+    //res.status(200).json({message:"authenticated!"});
+    res.json({ username: req.user.username })
+  }
 );
 
 app.get('/api/register', (req, res, next) => {
@@ -133,120 +133,128 @@ app.post('/api/register', (req, res, next) => {
   //const salt = saltHash.salt;
   //const hash = saltHash.hash;
   const newUser = new User({
-      username: req.body.username,
-      hash: req.body.password,
-      salt: "salt",
-      admin: true
+    username: req.body.username,
+    hash: req.body.password,
+    salt: "salt",
+    admin: true
   });
   newUser.save()
-      .then((user) => {
-          console.log(user);
-      });
+    .then((user) => {
+      console.log(user);
+    });
   res.redirect('/');
 });
 
 const auth = () => {
 
   return (req, res, next) => {
-      passport.authenticate('local', (error, user, info) => {
-          console.log("error:"+error)
-          if (error) {
-            res.status(401).json(error);
-          } else {
-            req.login(user, function(error) {
-                if (error) return next(error);
-                next();
-            });
-          }
-      })(req, res, next);
+    passport.authenticate('local', (error, user, info) => {
+      console.log("error:" + error)
+      if (error) {
+        res.status(401).json(error);
+      } else {
+        req.login(user, function (error) {
+          if (error) return next(error);
+          next();
+        });
+      }
+    })(req, res, next);
   }
 }
 
-app.post('/api/login', auth() , (req, res) => {
+app.post('/api/login', auth(), (req, res) => {
   console.log("going through /api/login")
-  res.status(200).json({username : req.user.username});
+  res.status(200).json({ username: req.user.username });
 });
 
-app.get('/api/logout', function(req, res){
+app.get('/api/logout', function (req, res) {
   console.log("trying to logout")
   req.logout();
   //res.redirect('/');
   res.json("logged out");
 });
 
-  //////////////////////////////////////////////////////
-  // functional apis
-  /*  "/api/posts"
-   *    GET: finds all posts
-   *    POST: creates a new contact
-   */
-  
-  app.get("/api/posts", isAuth, async function(req, res) {
-    console.log("entering get api/posts");
-    try {
-      posts = await Post.find({});
-      console.log(posts);
-      res.status(200).send(posts);
-    }
-    catch(err) {
-      handleError(res, err.message, "Failed to get posts.");
-    }
-  });
-  
-  app.post("/api/posts", async function(req, res) {
-    console.log("the title is"+req.body.title);
-    const post = new Post(req.body);
+//////////////////////////////////////////////////////
+// functional apis
+/*  "/api/posts"
+ *    GET: finds all posts
+ *    POST: creates a new contact
+ */
 
-    try {
-      await post.save();
-      res.status(201).send(post);
-    } catch (err) {
-      res.status(500).send(err);
-    }
-  });
-  
-  /*  "/api/posts/:id"
-   *    GET: find contact by id
-   *    PUT: update contact by id
-   *    DELETE: deletes contact by id
-   */
-  
-  app.get("/api/posts/:id", async function(req, res) {
-      console.log("getting single post ");
-      try {
-        const post = await Post.findById(req.params.id)
-        //wait postModel.save()
-        res.status(200).json(post);
-      } catch (err) {
-        res.status(500).send(err)
-      }
-  });
-  
-  app.put("/api/posts/:id", async function(req, res) {
-    console.log("updating single post "+req.body.title);
-    try {
-      await Post.findByIdAndUpdate(req.params.id, req.body)
-      //wait postModel.save()
-      res.send("updated")
-    } catch (err) {
-      res.status(500).send(err)
-    }
-  });
-  
-  app.delete("/api/posts/:id", async function(req, res) {
-    console.log("deleting single post "+req.params.id);
-    try {
-      await Post.findByIdAndDelete(req.params.id)
-      //wait postModel.save()
-      res.json(req.params.id);
-    } catch (err) {
-      res.status(500).send(err)
-    }
-  });
+app.get("/api/posts", isAuth, async function (req, res) {
+  const { page = 1, limit = 10 } = req.query;
+  console.log("entering get api/posts for page " + page + " and limit " + limit);
+  try {
+    posts = await Post.find({}).limit(limit * 1)
+      .skip((page - 1) * limit);
+    // get total documents in the Posts collection 
+    const count = await Post.countDocuments();
+    console.log(posts);
+    res.status(200).json({
+      posts,
+      nbPages: Math.ceil(count / limit),
+      currentPage: page
+    });
+  }
+  catch (err) {
+    handleError(res, err.message, "Failed to get posts.");
+  }
+});
+
+app.post("/api/posts", async function (req, res) {
+  console.log("the title is" + req.body.title);
+  const post = new Post(req.body);
+
+  try {
+    await post.save();
+    res.status(201).send(post);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+/*  "/api/posts/:id"
+ *    GET: find contact by id
+ *    PUT: update contact by id
+ *    DELETE: deletes contact by id
+ */
+
+app.get("/api/posts/:id", async function (req, res) {
+  console.log("getting single post ");
+  try {
+    const post = await Post.findById(req.params.id)
+    //wait postModel.save()
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).send(err)
+  }
+});
+
+app.put("/api/posts/:id", async function (req, res) {
+  console.log("updating single post " + req.body.title);
+  try {
+    await Post.findByIdAndUpdate(req.params.id, req.body)
+    //wait postModel.save()
+    res.send("updated")
+  } catch (err) {
+    res.status(500).send(err)
+  }
+});
+
+app.delete("/api/posts/:id", async function (req, res) {
+  console.log("deleting single post " + req.params.id);
+  try {
+    await Post.findByIdAndDelete(req.params.id)
+    //wait postModel.save()
+    res.json(req.params.id);
+  } catch (err) {
+    res.status(500).send(err)
+  }
+});
 //////////////////////////////////////////////////
 // posts API ROUTES BELOW
-app.get('/*', function(req,res) {
+app.get('/*', function (req, res) {
   console.log("redirect to angular")
-  res.sendFile(__dirname+'/dist/aureblog/index.html');
+  res.sendFile(__dirname + '/dist/aureblog/index.html');
 });
 

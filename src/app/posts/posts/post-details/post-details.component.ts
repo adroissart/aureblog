@@ -3,7 +3,7 @@ import { Post } from '../post';
 import { PostService } from '../post.service';
 
 @Component({
-  selector: 'post-details',
+  selector: 'app-post-details',
   templateUrl: './post-details.component.html',
   styleUrls: ['./post-details.component.scss']
 })
@@ -19,7 +19,7 @@ export class PostDetailsComponent {
   @Input()
   deleteHandler: Function;
 
-  constructor (private postService: PostService) {}
+  constructor(private postService: PostService) { }
 
   createPost(post: Post) {
     this.postService.createPost(post).then((newPost: Post) => {
@@ -33,8 +33,8 @@ export class PostDetailsComponent {
     });
   }
 
-  deletePost(postId: String): void {
-    this.postService.deletePost(postId).then((deletedPostId: String) => {
+  deletePost(postId: string): void {
+    this.postService.deletePost(postId).then((deletedPostId: string) => {
       this.deleteHandler(deletedPostId);
     });
   }

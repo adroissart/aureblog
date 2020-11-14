@@ -1,42 +1,44 @@
-
 <div class="row" *ngIf="isLoggedIn; else elseBlock">
   <div class="col-md-12" *ngIf="!selectedPost">
-    <h2>Posts</h2>
+    <h2>Posts {{currentPage}} {{nbPages}}</h2>
+    <nav aria-label="Post Pagination">
+      <ul class="pagination">
+        <li class="page-item" [ngClass]="{'disabled' : 1==currentPage}">
+          <a class="page-link" href="#" (click)="reloadPosts()">Previous</a>
+        </li>
+        <li *ngFor="let item of [].constructor(nbPages); let i = index"
+          [ngClass]="{'page-item' : true, 'active' : (i+1)==currentPage}">
+          <a class="page-link" href="#" (click)="reloadPosts(i)">{{i+1}}</a>
+        </li>
+        <li class="page-item" [ngClass]="{'disabled' : nbPages==currentPage}">
+          <a class="page-link" href="#" (click)="reloadPosts(currentPage)">Next</a>
+        </li>
+      </ul>
+    </nav>
     <div class="row card-group">
-      <div class="col-md-12"  *ngFor="let post of posts" (click)="selectPost(post)">
-          <div class="card">
-            <div class="row no-gutters">
-              <div class="col-md-1">
-                <img src="http://fr.web.img5.acsta.net/r_160_240/b_1_d6d6d6/medias/nmedia/18/66/01/66/20217856.jpg" class="card-img" alt="...">
-              </div>
-              <div class="col-md-11">
-                <div class="card-body">
-                  <h5 class="card-title">{{post.title}}<span class="badge badge-primary">{{post.rating}}</span></h5>
-                  <p class="card-text"><small class="text-muted">vu le {{post.date}}</small></p>
-                </div>
+      <div class="col-md-12" *ngFor="let post of posts" (click)="selectPost(post)">
+        <div class="card">
+          <div class="row no-gutters">
+            <div class="col-md-1">
+              <img src="{{post.imageurl}}" class="card-img" alt="...">
+            </div>
+            <div class="col-md-11">
+              <div class="card-body">
+                <h5 class="card-title">{{post.title}}<span class="badge badge-primary">{{post.rating}}</span></h5>
+                <p class="card-text"><small class="text-muted">vu le {{post.date}}</small></p>
               </div>
             </div>
           </div>
+        </div>
       </div>
     </div>
-    <!-- <ul class="list-group">
-      <li class="list-group-item"
-        *ngFor="let post of posts"
-        (click)="selectPost(post)"
-        [class.active]="post === selectedPost">
-        [{{post.title}}] {{post.title}}
-      </li>
-    </ul> -->
     <button class="btn btn-warning" (click)="createNewPost()">New</button>
   </div>
   <div class="col-md-12" *ngIf="selectedPost">
     <button class="btn btn-light" (click)="unselectPost()">back</button>
-    <post-details
-      [post]="selectedPost"
-      [createHandler]="addPost"
-      [updateHandler]="updatePost"
+    <app-post-details [post]="selectedPost" [createHandler]="addPost" [updateHandler]="updatePost"
       [deleteHandler]="deletePost">
-    </post-details>
+    </app-post-details>
   </div>
 </div>
 <ng-template #elseBlock>nothing to display</ng-template>

@@ -4,4 +4,5 @@ export class Post {
     date: string;
     content: string;
     rating: number;
+    imageurl: string;
 }

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 //require('dotenv').config();
 const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/test";
-mongoose.connect(mongoUri,{ useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
+mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
     .then(() => console.log("Database Connected Successfully"))
     .catch(err => console.log(err));
 //const connection = mongoose.createConnection(process.env.MONGODB_URI || "mongodb://localhost:27017/test", {
@@ -23,7 +23,8 @@ const postSchema = new mongoose.Schema({
     title: String,
     date: String,
     content: String,
-    rating: Number  
+    rating: Number,
+    imageurl: String
 });
 const Post = mongoose.model('Post', postSchema);
 
