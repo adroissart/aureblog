@@ -25,6 +25,19 @@
         placeholder="Image URL" />
     </div>
     <div class="form-group">
+      <label for="post-year">year</label>
+      <input type="number" class="form-control" name="post-year" [(ngModel)]="post.year" placeholder="2020" />
+    </div>
+    <div class="form-group">
+      <label for="post-directors">directors</label>
+      <input type="text" class="form-control" name="post-directors" [(ngModel)]="post.directors"
+        placeholder="directors" />
+    </div>
+    <div class="form-group">
+      <label for="post-tagss">year</label>
+      <tag-input name="post-tags" [(ngModel)]='post.tags' theme='bootstrap' modelAsStrings='true'></tag-input>
+    </div>
+    <div class="form-group">
       <label for="post-rating">Rating</label>
       <select class="form-control" [(ngModel)]="post.rating" name="post-rating">
         <option>1</option>

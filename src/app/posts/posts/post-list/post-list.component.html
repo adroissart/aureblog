@@ -1,44 +1,55 @@
 <div class="row" *ngIf="isLoggedIn; else elseBlock">
   <div class="col-md-12" *ngIf="!selectedPost">
-    <h2>Posts {{currentPage}} {{nbPages}}</h2>
-    <nav aria-label="Post Pagination">
-      <ul class="pagination">
-        <li class="page-item" [ngClass]="{'disabled' : 1==currentPage}">
-          <a class="page-link" href="#" (click)="reloadPosts()">Previous</a>
-        </li>
-        <li *ngFor="let item of [].constructor(nbPages); let i = index"
-          [ngClass]="{'page-item' : true, 'active' : (i+1)==currentPage}">
-          <a class="page-link" href="#" (click)="reloadPosts(i)">{{i+1}}</a>
-        </li>
-        <li class="page-item" [ngClass]="{'disabled' : nbPages==currentPage}">
-          <a class="page-link" href="#" (click)="reloadPosts(currentPage)">Next</a>
-        </li>
-      </ul>
-    </nav>
-    <div class="row card-group">
-      <div class="col-md-12" *ngFor="let post of posts" (click)="selectPost(post)">
-        <div class="card">
-          <div class="row no-gutters">
-            <div class="col-md-1">
-              <img src="{{post.imageurl}}" class="card-img" alt="...">
-            </div>
-            <div class="col-md-11">
-              <div class="card-body">
-                <h5 class="card-title">{{post.title}}<span class="badge badge-primary">{{post.rating}}</span></h5>
-                <p class="card-text"><small class="text-muted">vu le {{post.date}}</small></p>
+    <div class="row">
+      <div class="col-md-12">
+        <app-filter (filterRequested)="filterPosts($event)" [startDate]="filterStartDate" [endDate]="filterEndDate"
+          [ratings]="filterRatings" [partialTitle]="partialTitle"></app-filter>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <nav aria-label="Post Pagination">
+          <ul class="pagination">
+            <li class="page-item" [ngClass]="{'disabled' : currentPage <= 1}">
+              <a class="page-link" href="#" (click)="reloadPosts(currentPage - 2)">Previous</a>
+            </li>
+            <li *ngFor="let item of [].constructor(nbPages); let i = index"
+              [ngClass]="{'page-item' : true, 'active' : (i+1)==currentPage}">
+              <a class="page-link" href="#" (click)="reloadPosts(i)">{{i+1}}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled' : nbPages==currentPage}">
+              <a class="page-link" href="#" (click)="reloadPosts(currentPage)">Next</a>
+            </li>
+          </ul>
+        </nav>
+        <div class="row card-group">
+          <div class="col-md-12" *ngFor="let post of posts" (click)="selectPost(post)">
+            <div class="media mb-1">
+              <img src="{{post.imageurl}}" width="64px" class="mr-3" alt="...">
+              <div class="media-body">
+                <h5 class="mt-0">{{post.title}} ({{post.year}})<app-rating-viewer [rating]=post.rating>
+                  </app-rating-viewer>
+                  <small><i> vu le {{post.date}}</i></small></h5>
+                short summary
               </div>
             </div>
           </div>
         </div>
+        <button class="btn btn-primary mt-1" (click)="createNewPost()">New</button>
       </div>
     </div>
-    <button class="btn btn-warning" (click)="createNewPost()">New</button>
   </div>
   <div class="col-md-12" *ngIf="selectedPost">
-    <button class="btn btn-light" (click)="unselectPost()">back</button>
-    <app-post-details [post]="selectedPost" [createHandler]="addPost" [updateHandler]="updatePost"
-      [deleteHandler]="deletePost">
-    </app-post-details>
+    <button class="btn btn-secondary mt-1 mb-1" (click)="unselectPost()">back</button>
+    <div *ngIf="isEdit; else detailsElseBlock">
+      <app-post-details [post]="selectedPost" [createHandler]="addPost" [updateHandler]="updatePost"
+        [deleteHandler]="deletePost">
+      </app-post-details>
+    </div>
+    <ng-template #detailsElseBlock>
+      <app-post-details-noedit [post]="selectedPost">
+      </app-post-details-noedit>
+    </ng-template>
   </div>
 </div>
 <ng-template #elseBlock>nothing to display</ng-template>

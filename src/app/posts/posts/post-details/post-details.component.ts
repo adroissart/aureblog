@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Post } from '../post';
 import { PostService } from '../post.service';
+import { TagInputModule } from 'ngx-chips';
 
 @Component({
   selector: 'app-post-details',
@@ -28,6 +29,7 @@ export class PostDetailsComponent {
   }
 
   updatePost(post: Post): void {
+    console.log('tags : ' + post.tags);
     this.postService.updatePost(post).then((updatedPost: Post) => {
       this.updateHandler(updatedPost);
     });

@@ -1,3 +1,4 @@
 declare interface NiceUser {
-    username : string
+    username: string,
+    admin: boolean
 }

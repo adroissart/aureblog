@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   userEmail: string;
   userPassword: string;
   isLoggedIn = false;
+  isAdmin = false;
   userName = 'loading';
   errorMessage: string;
 
@@ -28,19 +29,21 @@ export class LoginComponent implements OnInit {
   }
 
   updateLoginInfo(message: string) {
-    this.userName = message;
-    this.isLoggedIn = (this.userName !== '');
+    const user: NiceUser = JSON.parse(message);
+    this.userName = user.username;
+    this.isAdmin = user.admin;
+    this.isLoggedIn = user.username ? (this.userName !== '') : false;
     console.log('LoginComponent::updateLoginInfo: hello ' + this.userName);
   }
 
   login() {
     this.authService.validate(this.userEmail.valueOf(), this.userPassword.valueOf())
       .then((response: NiceUser) => {
-        this.authService.setUserInfo(response.username);
+        this.authService.setUserInfo(JSON.stringify(response));
         if (this.userName !== '') {
           this.errorMessage = '';
         }
-        this.router.navigate(['home'])
+        this.router.navigate([''])
           .then(() => {
             console.log('LoginComponent::login: i am reloading');
           });
@@ -50,7 +53,7 @@ export class LoginComponent implements OnInit {
 
   logout() {
     this.authService.logout().then((response) => {
-      this.router.navigate(['home'])
+      this.router.navigate([''])
         .then(() => {
           console.log('LoginComponent::logout: i am reloading after logout');
           this.userEmail = '';

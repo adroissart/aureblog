@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 //require('dotenv').config();
 const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/test";
@@ -24,8 +25,13 @@ const postSchema = new mongoose.Schema({
     date: String,
     content: String,
     rating: Number,
-    imageurl: String
+    imageurl: String,
+    directors: [String],
+    awards: [String],
+    year: Number,
+    tags: [String]
 });
+postSchema.plugin(mongoosePaginate);
 const Post = mongoose.model('Post', postSchema);
 
 // Expose the connection

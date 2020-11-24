@@ -104,8 +104,7 @@ isAuth = (req, res, next) => {
   } else {
     console.log("we are not authenticated")
     req.session.returnTo = req.url;
-    //const link = '<h1>please authenticate</h1><a href=\'/login\'>login</a>'
-    res.status(401).json({ "link": link });
+    res.status(401).json({});
   }
 }
 
@@ -115,7 +114,7 @@ app.get('/api/checkauth',
   isAuth, (req, res, next) => {
     console.log("api/checkauth: user is " + req.user);
     //res.status(200).json({message:"authenticated!"});
-    res.json({ username: req.user.username })
+    res.json({ username: req.user.username, admin: req.user.admin })
   }
 );
 
@@ -136,7 +135,7 @@ app.post('/api/register', (req, res, next) => {
     username: req.body.username,
     hash: req.body.password,
     salt: "salt",
-    admin: true
+    admin: false
   });
   newUser.save()
     .then((user) => {
@@ -146,7 +145,6 @@ app.post('/api/register', (req, res, next) => {
 });
 
 const auth = () => {
-
   return (req, res, next) => {
     passport.authenticate('local', (error, user, info) => {
       console.log("error:" + error)
@@ -164,7 +162,7 @@ const auth = () => {
 
 app.post('/api/login', auth(), (req, res) => {
   console.log("going through /api/login")
-  res.status(200).json({ username: req.user.username });
+  res.status(200).json({ username: req.user.username, admin: req.user.admin });
 });
 
 app.get('/api/logout', function (req, res) {
@@ -182,24 +180,45 @@ app.get('/api/logout', function (req, res) {
  */
 
 app.get("/api/posts", isAuth, async function (req, res) {
-  const { page = 1, limit = 10 } = req.query;
-  console.log("entering get api/posts for page " + page + " and limit " + limit);
+  let { page = 1, limit = 10, startDate = "0001-01-01", endDate = '9999-12-31', ratings = '1, 2, 3, 4, 5', partialTitle = '' } = req.query;
+  let nbPages;
+  if (endDate == '') {
+    endDate = '9999-12-31'
+  }
+  if (partialTitle === '') {
+    partialTitle = '.*';
+  }
+  const ratingsArray = ratings.split(',');
+  console.log("entering get api/posts for page " + page + " and limit " + limit + "and startDate " + startDate + " and endDate " + endDate + " and ratings " + ratings + " and partialTitle " + partialTitle);
+  const options = {
+    page: page,
+    limit: limit,
+    //    collation: {
+    //      locale: 'en'
+    //    }
+  };
   try {
-    posts = await Post.find({}).limit(limit * 1)
-      .skip((page - 1) * limit);
-    // get total documents in the Posts collection 
-    const count = await Post.countDocuments();
-    console.log(posts);
-    res.status(200).json({
-      posts,
-      nbPages: Math.ceil(count / limit),
-      currentPage: page
+    //    posts = await Post.find({ date: { $gt: startDate } }).limit(limit * 1)
+    //      .skip((page - 1) * limit);
+    //    // get total documents in the Posts collection 
+    //    const count = await Post.countDocuments();
+    Post.paginate({ date: { $gt: startDate, $lt: endDate }, rating: { $in: ratingsArray }, title: { $regex: partialTitle, $options: 'i' } }, options, function (err, result) {
+      posts = result.docs;
+      nbPages = result.totalPages;
+      console.log(posts);
+      res.status(200).json({
+        posts,
+        nbPages: nbPages, //Math.ceil(count / limit),
+        currentPage: parseInt(page)
+      });
     });
+
   }
   catch (err) {
     handleError(res, err.message, "Failed to get posts.");
   }
 });
+
 
 app.post("/api/posts", async function (req, res) {
   console.log("the title is" + req.body.title);

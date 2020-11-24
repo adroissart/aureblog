@@ -8,7 +8,7 @@ import { BehaviorSubject, throwError } from 'rxjs';
 })
 export class AuthService {
 
-  private userDataSource = new BehaviorSubject('');
+  private userDataSource = new BehaviorSubject('{}');
   currentUserData = this.userDataSource.asObservable();
   private errorMessageSource = new BehaviorSubject('');
   currentErrorMessage = this.errorMessageSource.asObservable();
@@ -35,7 +35,7 @@ export class AuthService {
 
   private afterCheckAuth(user: NiceUser) {
     console.log('AuthService::afterCheckAuth: response received ' + user);
-    this.setUserInfo(user.username);
+    this.setUserInfo(JSON.stringify(user));
   }
 
   public setUserInfo(username: string) {
@@ -49,7 +49,7 @@ export class AuthService {
   }
 
   public logout() {
-    this.userDataSource.next('');
+    this.userDataSource.next('{}');
     return this.http.get('api/logout').toPromise();
   }
 
@@ -57,7 +57,7 @@ export class AuthService {
     const errMsg = 'error';
     if (error.status === 401) {
       console.log('AuthService::handleError: no authentication');
-      this.userDataSource.next('');
+      this.userDataSource.next('{}');
     }
     // return errMsg
     throw (new Error('You shall not pass'));
@@ -66,7 +66,7 @@ export class AuthService {
   private handleLoginError(error: any) {
     console.log(error.error);
     this.errorMessageSource.next(error.error);
-    const emptyUser: NiceUser = { username: '' };
+    const emptyUser: NiceUser = { username: '', admin: false };
     return emptyUser;
   }
 }

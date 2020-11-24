@@ -1,0 +1,15 @@
+<div *ngIf="post" class="row">
+  <div class="col-md-3">
+    <img src="{{post.imageurl}}" class="w-100" alt="...">
+  </div>
+  <div class="col-md-9">
+    <h5>{{post.title}} <small>{{post.directors}} ({{post.year}})</small>
+      <app-rating-viewer [rating]=post.rating></app-rating-viewer>
+    </h5>
+    <p>
+      <small class="text-muted">vu le {{post.date}}</small><br />
+      <span>{{post.content}}</span>
+    </p>
+    <button *ngFor='let tag of post.tags' type="button" class="btn btn-primary" disabled>{{tag}}</button>
+  </div>
+</div>

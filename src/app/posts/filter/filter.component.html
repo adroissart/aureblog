@@ -1,0 +1,89 @@
+<div class="accordion" id="accordionExample">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <div class="row">
+                <div class="col-md-3">
+                    <h2>Reviews</h2>
+                </div>
+                <div class="col-md-9">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
+                            data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+                            filters: {{partialTitle === '' ? '' : 'title like \"'+partialTitle+'\",' }} viewed from
+                            {{startDate}} to
+                            {{endDate}}, ratings {{ratings}}
+                        </button>
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="collapse" id="collapseFilters" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">
+                <form [formGroup]="form" (ngSubmit)="applyFilter()">
+                    <div class="form-row">
+                        <label for="partialTitle">Title</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Title" aria-label="Title"
+                                aria-describedby="button-addon2" name='partialTitle' [(ngModel)]="partialTitle">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label>Start and end date</label>
+                        <div class="input-group">
+                            <input type="date" aria-label="Start Date" class="form-control" name="startDate"
+                                [(ngModel)]="startDate">
+                            <input type="date" aria-label="End Date" class="form-control" name="endDate"
+                                [(ngModel)]="endDate">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                <label class="form-check-label" for="inlineCheckbox1">1</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                <label class="form-check-label" for="inlineCheckbox2">2</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
+                                <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
+                                <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
+                                <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
+                            </div>
+                            <label for="exampleFormControlSelect2">Ratings</label>
+                            <div *ngFor="let data of Data; let i=index">
+                                <label>
+                                    <input type="checkbox" [value]="data.value" (change)="onCheckboxChange($event)" />
+                                    {{data.name}}
+                                </label>
+                            </div>
+                            <select multiple class="form-control" id="exampleFormControlSelect2" name="ratings"
+                                [(ngModel)]="ratings">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <button type="submit" class="btn btn-primary mb-2" (click)="applyFilter()"
+                            data-toggle="collapse" data-target="#collapseFilters" aria-expanded="false"
+                            aria-controls="collapseFilters">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
