@@ -27,55 +27,27 @@
                                 <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
                             </div>
                             <input type="text" class="form-control" placeholder="Title" aria-label="Title"
-                                aria-describedby="button-addon2" name='partialTitle' [(ngModel)]="partialTitle">
+                                aria-describedby="button-addon2" name='partialTitle' [(ngModel)]="partialTitle"
+                                [ngModelOptions]="{standalone: true}">
                         </div>
                     </div>
                     <div class="form-row">
                         <label>Start and end date</label>
                         <div class="input-group">
                             <input type="date" aria-label="Start Date" class="form-control" name="startDate"
-                                [(ngModel)]="startDate">
+                                [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}">
                             <input type="date" aria-label="End Date" class="form-control" name="endDate"
-                                [(ngModel)]="endDate">
+                                [(ngModel)]="endDate" [ngModelOptions]="{standalone: true}">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                                <label class="form-check-label" for="inlineCheckbox1">1</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-                                <label class="form-check-label" for="inlineCheckbox2">2</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
-                                <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
-                                <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
-                                <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
-                            </div>
-                            <label for="exampleFormControlSelect2">Ratings</label>
-                            <div *ngFor="let data of Data; let i=index">
-                                <label>
-                                    <input type="checkbox" [value]="data.value" (change)="onCheckboxChange($event)" />
-                                    {{data.name}}
-                                </label>
-                            </div>
-                            <select multiple class="form-control" id="exampleFormControlSelect2" name="ratings"
-                                [(ngModel)]="ratings">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
+                            <label>Ratings : </label>
+                            <label formArrayName="ratings"
+                                *ngFor="let rating of ratingsFormArray.controls; let i = index">
+                                <input type="checkbox" [formControlName]="i">
+                                {{toto[i].name}}
+                            </label>
                         </div>
                     </div>
                     <div class="form-row">

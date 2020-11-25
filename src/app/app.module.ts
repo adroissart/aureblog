@@ -11,7 +11,7 @@ import { RatingViewerComponent } from './rating-viewer/rating-viewer.component';
 import { FilterComponent } from './posts/filter/filter.component';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
-import { FormsModule, ReactiveFormsModule, FormGroup, FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -27,10 +27,6 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormArray, FormBuilder, Fo
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    FormGroup,
-    FormArray,
-    FormBuilder,
-    FormControl,
     TagInputModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,

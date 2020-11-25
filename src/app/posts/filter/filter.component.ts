@@ -13,43 +13,39 @@ export class FilterComponent implements OnInit {
   @Input() ratings: [string];
   @Input() partialTitle: string;
   form: FormGroup;
-  Data: Array<any> = [
-    { name: '1', value: '1' },
-    { name: '2', value: '2' },
-    { name: '3', value: '3' },
-    { name: '4', value: '4' },
-    { name: '5', value: '5' }
+  toto = [
+    { id: 1, name: '1' },
+    { id: 2, name: '2' },
+    { id: 3, name: '3' },
+    { id: 4, name: '4' },
+    { id: 5, name: '5' }
   ];
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      checkArray: this.fb.array([])
+  constructor(private formBuilder: FormBuilder) {
+    this.form = this.formBuilder.group({
+      ratings: new FormArray([])
     });
+    this.addCheckboxes();
   }
 
   ngOnInit() {
     console.log('FilterComponent::ngOnInit: start');
   }
 
-  onCheckboxChange(e) {
-    const checkArray: FormArray = this.form.get('checkArray') as FormArray;
-
-    if (e.target.checked) {
-      checkArray.push(new FormControl(e.target.value));
-    } else {
-      let i = 0;
-      checkArray.controls.forEach((item: FormControl) => {
-        if (item.value === e.target.value) {
-          checkArray.removeAt(i);
-          return;
-        }
-        i++;
-      });
-    }
+  get ratingsFormArray() {
+    return this.form.controls.ratings as FormArray;
   }
+
+  addCheckboxes() {
+    this.toto.forEach(() => this.ratingsFormArray.push(new FormControl(true)));
+  }
+
 
   applyFilter() {
     console.log('apply filter' + this.startDate.toString() + this.endDate.toString() + this.ratings.toString() + this.partialTitle);
+    this.ratings = this.form.value.ratings
+      .map((checked, i) => checked ? this.toto[i].id : null)
+      .filter(v => v !== null);
     this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle });
   }
 
