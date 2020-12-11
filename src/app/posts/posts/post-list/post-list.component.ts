@@ -97,13 +97,16 @@ export class PostListComponent implements OnInit {
     const post: Post = {
       title: '',
       date: '',
+      place: '',
       content: '',
       rating: 1,
       imageurl: '...',
+      country: '',
       year: 0,
       directors: [''],
       awards: [''],
-      tags: ['']
+      tags: [''],
+      allocineid: 0
     };
 
     // By default, a newly-created contact will have the selected state.

@@ -15,6 +15,10 @@
       <input type="date" class="form-control" name="post-date" [(ngModel)]="post.date" placeholder="2020-05-28" />
     </div>
     <div class="form-group">
+      <label for="post-place">View Place</label>
+      <input type="text" class="form-control" name="post-place" [(ngModel)]="post.place" placeholder="Netflix" />
+    </div>
+    <div class="form-group">
       <label for="post-content">Text</label>
       <textarea type="text" class="form-control" name="post-content" [(ngModel)]="post.content" placeholder="Content"
         rows="4"></textarea>
@@ -29,13 +33,21 @@
       <input type="number" class="form-control" name="post-year" [(ngModel)]="post.year" placeholder="2020" />
     </div>
     <div class="form-group">
+      <label for="post-country">country</label>
+      <input type="text" class="form-control" name="post-country" [(ngModel)]="post.country" placeholder="France" />
+    </div>
+    <div class="form-group">
       <label for="post-directors">directors</label>
       <input type="text" class="form-control" name="post-directors" [(ngModel)]="post.directors"
         placeholder="directors" />
     </div>
     <div class="form-group">
-      <label for="post-tagss">year</label>
+      <label for="post-tags">tags</label>
       <tag-input name="post-tags" [(ngModel)]='post.tags' theme='bootstrap' modelAsStrings='true'></tag-input>
+    </div>
+    <div class="form-group">
+      <label for="post-awards">awards</label>
+      <tag-input name="post-awards" [(ngModel)]='post.awards' theme='bootstrap' modelAsStrings='true'></tag-input>
     </div>
     <div class="form-group">
       <label for="post-rating">Rating</label>
@@ -46,6 +58,11 @@
         <option>4</option>
         <option>5</option>
       </select>
+    </div>
+    <div class="form-group">
+      <label for="post-allocineid">allocine id</label>
+      <input type="number" class="form-control" name="post-allocineid" [(ngModel)]="post.allocineid"
+        placeholder="123456" />
     </div>
     <button class="btn btn-primary" *ngIf="!post._id" (click)="createPost(post)">Create</button>
     <button class="btn btn-info" *ngIf="post._id" (click)="updatePost(post)">Update</button>

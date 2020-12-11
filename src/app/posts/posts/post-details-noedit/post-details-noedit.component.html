@@ -3,13 +3,24 @@
     <img src="{{post.imageurl}}" class="w-100" alt="...">
   </div>
   <div class="col-md-9">
-    <h5>{{post.title}} <small>{{post.directors}} ({{post.year}})</small>
+    <h5>{{post.title}} <small>{{post.directors}} ({{post.year}},{{post.country}})</small>
       <app-rating-viewer [rating]=post.rating></app-rating-viewer>
     </h5>
     <p>
-      <small class="text-muted">vu le {{post.date}}</small><br />
+      <small class="text-muted">vu le {{post.date}} a {{post.place}}</small><br />
       <span>{{post.content}}</span>
+      <span><i>{{post.allocineid}}</i></span>
     </p>
-    <button *ngFor='let tag of post.tags' type="button" class="btn btn-primary" disabled>{{tag}}</button>
+
+    <div class="form-group">
+      <label for="post-tags">Tags : </label>
+      <button *ngFor="let tag of post.tags" type="button" class="btn btn-outline-primary btn-sm"
+        disabled>{{tag}}</button>
+    </div>
+    <div class="form-group">
+      <label for="post-awards">Awards : </label>
+      <button *ngFor="let award of post.awards" type="button" class="btn btn-outline-primary btn-sm"
+        disabled>{{award}}</button>
+    </div>
   </div>
 </div>

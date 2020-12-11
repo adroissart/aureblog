@@ -23,13 +23,16 @@ const User = mongoose.model('User', UserSchema);
 const postSchema = new mongoose.Schema({
     title: String,
     date: String,
+    place: String,
     content: String,
     rating: Number,
     imageurl: String,
+    country: String,
     directors: [String],
     awards: [String],
     year: Number,
-    tags: [String]
+    tags: [String],
+    allocineid: Number
 });
 postSchema.plugin(mongoosePaginate);
 const Post = mongoose.model('Post', postSchema);
