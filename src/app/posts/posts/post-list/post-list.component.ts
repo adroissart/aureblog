@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, AfterViewChecked, AfterContentChecked, OnChanges } from '@angular/core';
 import { Post } from '../post';
 import { PostService, PostWithPages } from '../post.service';
 import { RatingViewerComponent } from '../../../rating-viewer/rating-viewer.component';
 import { PostDetailsComponent } from '../post-details/post-details.component';
 import { PostDetailsNoEditComponent } from '../post-details-noedit/post-details-noedit.component';
 import { AuthService } from '../../../auth.service';
+import { ViewportScroller } from '@angular/common';
 
 @Component({
   selector: 'app-post-list',
@@ -13,7 +14,7 @@ import { AuthService } from '../../../auth.service';
   providers: [PostService]
 })
 
-export class PostListComponent implements OnInit {
+export class PostListComponent implements OnInit, AfterViewChecked, AfterContentChecked, OnChanges {
 
   posts: Post[];
   selectedPost: Post;
@@ -26,12 +27,26 @@ export class PostListComponent implements OnInit {
   filterEndDate = '9999-12-31';
   filterRatings = [1, 2, 3, 4, 5];
   partialTitle = '';
+  scrollpositionY = 1000;
+  scrollpositionX = 0;
 
-  constructor(private authService: AuthService, private postService: PostService) { }
+  constructor(private authService: AuthService, private postService: PostService, private viewportScroller: ViewportScroller) { }
 
   ngOnInit() {
     console.log('PostListComponent::ngOnInit: start');
     this.authService.currentUserData.subscribe((message: string) => this.handleLoginEvent(message));
+  }
+  ngOnChanges() {
+    console.log('ngOnChanges');
+    this.scrollpositionX = this.viewportScroller.getScrollPosition()[0];
+    this.scrollpositionY = this.viewportScroller.getScrollPosition()[1];
+    console.log("storing position " + this.scrollpositionX + "/" + this.scrollpositionY);
+  }
+  ngAfterViewChecked() {
+    console.log('ngAfterViewChecked');
+  }
+  ngAfterContentChecked() {
+    console.log('ngAfterContentChecked');
   }
 
   private errorhandling(error) {
@@ -63,6 +78,8 @@ export class PostListComponent implements OnInit {
 
   reloadPosts(page: number = 0) {
     console.log('reloadPosts for page ' + page);
+    this.scrollpositionX = 0;
+    this.scrollpositionY = 0;
     this.postService
       .getPosts(page + 1, this.filterStartDate, this.filterEndDate, this.filterRatings, this.partialTitle)
       .then((postWithPages: PostWithPages) => {
@@ -91,6 +108,11 @@ export class PostListComponent implements OnInit {
 
   selectPost(post: Post) {
     this.selectedPost = post;
+    if (post != null) {
+      this.scrollpositionX = this.viewportScroller.getScrollPosition()[0];
+      this.scrollpositionY = this.viewportScroller.getScrollPosition()[1];
+      console.log("storing position " + this.scrollpositionX + "/" + this.scrollpositionY);
+    }
   }
 
   createNewPost() {
@@ -99,8 +121,8 @@ export class PostListComponent implements OnInit {
       date: '',
       place: '',
       content: '',
-      rating: 1,
-      imageurl: '...',
+      rating: 0,
+      imageurl: '',
       country: '',
       year: 0,
       directors: [''],
@@ -148,11 +170,46 @@ export class PostListComponent implements OnInit {
 
   unselectPost() {
     this.selectPost(null);
+
+    setTimeout(() => {
+      this.doScroll();
+    }, 500);
+
+  }
+
+  public doScroll() {
+    console.log("scrolling to " + this.scrollpositionY);
+    this.viewportScroller.scrollToPosition([this.scrollpositionX, this.scrollpositionY]);
+    this.scrollpositionX = 0;
+    this.scrollpositionY = 0;
   }
 
   hello() {
     console.log('hello');
   }
 
+  getImage(imageurl: string) {
+    return imageurl;
+  }
 
+  isVisible(input: number, currentPage: number, nbPages: number) {
+    if (input === 0) {
+      return true;
+    }
+    if (input === nbPages - 1) {
+      return true;
+    }
+    if ((input > Math.min(currentPage - 6, nbPages - 12)) && (input < Math.max(currentPage + 4, 11))) {
+      return true;
+    }
+    return false;
+  }
+  isVisiblePointPoint(input: number, currentPage: number, nbPages: number) {
+    if ((input === 0) && (currentPage > 6)) {
+      return true;
+    }
+    if ((input === nbPages - 2) && (currentPage < nbPages - 5)) {
+      return true;
+    }
+  }
 }

@@ -1,15 +1,20 @@
 <div *ngIf="post" class="row">
   <div class="col-md-3">
-    <img src="{{post.imageurl}}" class="w-100" alt="...">
+    <img src="{{post.imageurl || 'assets/images/movie.jpg'}}" class="w-100" alt="...">
   </div>
   <div class="col-md-9">
     <h5>{{post.title}} <small>{{post.directors}} ({{post.year}},{{post.country}})</small>
       <app-rating-viewer [rating]=post.rating></app-rating-viewer>
     </h5>
     <p>
+
+      <span *ngIf="post.allocineid > 0"><a
+          href="https://www.allocine.fr/film/fichefilm_gen_cfilm={{post.allocineid}}.html"
+          target="_blank">allocine</a></span>
+      <br />
       <small class="text-muted">vu le {{post.date}} a {{post.place}}</small><br />
       <span>{{post.content}}</span>
-      <span><i>{{post.allocineid}}</i></span>
+
     </p>
 
     <div class="form-group">

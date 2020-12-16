@@ -13,10 +13,14 @@
             <li class="page-item" [ngClass]="{'disabled' : currentPage <= 1}">
               <a class="page-link" href="#" (click)="reloadPosts(currentPage - 2)">Previous</a>
             </li>
-            <li *ngFor="let item of [].constructor(nbPages); let i = index"
-              [ngClass]="{'page-item' : true, 'active' : (i+1)==currentPage}">
-              <a class="page-link" href="#" (click)="reloadPosts(i)">{{i+1}}</a>
-            </li>
+            <ng-container *ngFor="let item of [].constructor(nbPages); let i = index">
+              <li *ngIf="isVisible(i,currentPage,nbPages)"
+                [ngClass]="{'page-item' : true, 'active' : (i+1)==currentPage }">
+                <a class="page-link" href="#" (click)="reloadPosts(i)">{{i+1}}</a>
+              </li>
+              <li class="page-item disabled" *ngIf="isVisiblePointPoint(i,currentPage,nbPages)"><a
+                  class="page-link">...</a></li>
+            </ng-container>
             <li class="page-item" [ngClass]="{'disabled' : nbPages==currentPage}">
               <a class="page-link" href="#" (click)="reloadPosts(currentPage)">Next</a>
             </li>
@@ -25,17 +29,17 @@
         <div class="row card-group">
           <div class="col-md-12" *ngFor="let post of posts" (click)="selectPost(post)">
             <div class="media mb-1">
-              <img src="{{post.imageurl}}" width="64px" class="mr-3" alt="...">
+              <img src="{{post.imageurl || 'assets/images/movie.jpg'}}" width="64px" class="mr-3" alt="image">
               <div class="media-body">
                 <h5 class="mt-0">{{post.title}} ({{post.year}})<app-rating-viewer [rating]=post.rating>
                   </app-rating-viewer>
                   <small><i> vu le {{post.date}}</i></small></h5>
-                short summary
+                {{post.content | slice:0:50}}
               </div>
             </div>
           </div>
         </div>
-        <button class="btn btn-primary mt-1" (click)="createNewPost()">New</button>
+        <button *ngIf="isEdit" class="btn btn-primary mt-1" (click)="createNewPost()">New</button>
       </div>
     </div>
   </div>

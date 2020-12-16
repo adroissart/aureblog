@@ -196,13 +196,15 @@ app.get("/api/posts", isAuth, async function (req, res) {
     //    collation: {
     //      locale: 'en'
     //    }
+    sort: { 'date': -1, 'title': 1 },
   };
   try {
     //    posts = await Post.find({ date: { $gt: startDate } }).limit(limit * 1)
     //      .skip((page - 1) * limit);
     //    // get total documents in the Posts collection 
     //    const count = await Post.countDocuments();
-    Post.paginate({ date: { $gt: startDate, $lt: endDate }, rating: { $in: ratingsArray }, title: { $regex: partialTitle, $options: 'i' } }, options, function (err, result) {
+    // , $lte: endDate
+    Post.paginate({ date: { $gte: startDate }, rating: { $in: ratingsArray }, title: { $regex: partialTitle, $options: 'i' } }, options, function (err, result) {
       posts = result.docs;
       nbPages = result.totalPages;
       console.log(posts);

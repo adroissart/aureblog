@@ -14,6 +14,7 @@ export class FilterComponent implements OnInit {
   @Input() partialTitle: string;
   form: FormGroup;
   toto = [
+    { id: 0, name: 'unrated' },
     { id: 1, name: '1' },
     { id: 2, name: '2' },
     { id: 3, name: '3' },
@@ -37,7 +38,7 @@ export class FilterComponent implements OnInit {
   }
 
   addCheckboxes() {
-    this.toto.forEach(() => this.ratingsFormArray.push(new FormControl(true)));
+    this.toto.forEach((item) => this.ratingsFormArray.push(new FormControl(item.id != 0)));
   }
 
 

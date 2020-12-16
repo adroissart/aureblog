@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Post } from './post';
 import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 
-const LIMIT = 2;
+const LIMIT = 40;
 export interface PostWithPages {
   posts: Post[];
   nbPages: number;

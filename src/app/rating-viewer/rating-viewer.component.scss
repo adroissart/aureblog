@@ -1,5 +1,7 @@
 $disliked: black;
+$soso: blue;
 $liked: rgba(255, 238, 0, 0.747);
+$reallyliked: orange;
 $loved: magenta;
 
 .liked-0 {
@@ -9,13 +11,13 @@ $loved: magenta;
     color: $disliked;
 }
 .liked-2 {
-    color: $disliked;
+    color: $soso;
 }
 .liked-3 {
     color: $liked;
 }
 .liked-4 {
-    color: $liked;
+    color: $reallyliked;
 }
 .liked-5 {
     color: $loved;
