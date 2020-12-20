@@ -7,12 +7,13 @@ import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@ang
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
-  @Output() filterRequested = new EventEmitter<{ startDate: string, endDate: string, ratings: [string], partialTitle: string, director: string }>();
+  @Output() filterRequested = new EventEmitter<{ startDate: string, endDate: string, ratings: string[], partialTitle: string, director: string, award: string }>();
   @Input() startDate: string;
   @Input() endDate: string;
-  @Input() ratings: [string];
+  @Input() ratings: string[];
   @Input() partialTitle: string;
   @Input() director: string;
+  @Input() award: string;
   form: FormGroup;
   toto = [
     { id: 0, name: 'unrated' },
@@ -48,7 +49,12 @@ export class FilterComponent implements OnInit {
     this.ratings = this.form.value.ratings
       .map((checked, i) => checked ? this.toto[i].id : null)
       .filter(v => v !== null);
-    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director });
+    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director, award: this.award });
+  }
+
+  reinit() {
+    console.log('reinit filters');
+    this.filterRequested.emit({ startDate: '1900-01-01', endDate: '9990-12-31', ratings: ['1', '2', '3', '4', '5'], partialTitle: '', director: '', award: '' });
   }
 
 }

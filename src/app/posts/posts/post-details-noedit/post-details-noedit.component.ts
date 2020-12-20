@@ -14,11 +14,18 @@ export class PostDetailsNoEditComponent {
 
   @Input()
   selectDirector: Function;
+  @Input()
+  selectAward: Function;
 
   constructor(private postService: PostService) { }
 
   doDirector() {
     console.log("select director in post details");
     this.selectDirector(this.post.directors[0]);
+  }
+
+  doAward(award) {
+    console.log("select award in post details");
+    this.selectAward(award);
   }
 }

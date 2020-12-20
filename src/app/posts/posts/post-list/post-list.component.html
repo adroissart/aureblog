@@ -3,7 +3,8 @@
     <div class="row">
       <div class="col-md-12">
         <app-filter (filterRequested)="filterPosts($event)" [startDate]="filterStartDate" [endDate]="filterEndDate"
-          [ratings]="filterRatings" [partialTitle]="partialTitle" [director]="filterDirector"></app-filter>
+          [ratings]="filterRatings" [partialTitle]="partialTitle" [director]="filterDirector" [award]="filterAward">
+        </app-filter>
       </div>
     </div>
     <div class="row">
@@ -31,7 +32,8 @@
             <div class="media mb-1">
               <img src="{{post.imageurl || 'assets/images/movie.jpg'}}" width="64px" class="mr-3" alt="image">
               <div class="media-body">
-                <h5 class="mt-0">{{post.title}} ({{post.year}})<app-rating-viewer [rating]=post.rating>
+                <h5 class="mt-0">{{post.title}} ({{post.directors}}, {{post.year}})<app-rating-viewer
+                    [rating]=post.rating>
                   </app-rating-viewer>
                   <small><i> vu le {{post.date}}</i></small>
                 </h5>
@@ -52,7 +54,7 @@
       </app-post-details>
     </div>
     <ng-template #detailsElseBlock>
-      <app-post-details-noedit [post]="selectedPost" [selectDirector]="selectDirector">
+      <app-post-details-noedit [post]="selectedPost" [selectDirector]="selectDirector" [selectAward]="selectAward">
       </app-post-details-noedit>
     </ng-template>
   </div>

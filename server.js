@@ -180,7 +180,7 @@ app.get('/api/logout', function (req, res) {
  */
 
 app.get("/api/posts", isAuth, async function (req, res) {
-  let { page = 1, limit = 10, startDate = "0001-01-01", endDate = '9999-12-31', ratings = '1, 2, 3, 4, 5', partialTitle = '', director = '' } = req.query;
+  let { page = 1, limit = 10, startDate = "0001-01-01", endDate = '9999-12-31', ratings = '1, 2, 3, 4, 5', partialTitle = '', director = '', award = '' } = req.query;
   let nbPages;
   if (endDate == '') {
     endDate = '9999-12-31'
@@ -211,6 +211,9 @@ app.get("/api/posts", isAuth, async function (req, res) {
     let titleParams = { $regex: partialTitle, $options: 'i' };
     if (director !== '') {
       queryParams.directors = director;
+    }
+    if (award !== '') {
+      queryParams.awards = award;
     }
     queryParams.date = dateParams;
     queryParams.title = titleParams;

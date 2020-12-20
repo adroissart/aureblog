@@ -16,10 +16,10 @@ export class PostService {
   constructor(private http: HttpClient) { }
 
   // get("/api/posts")
-  getPosts(page = 1, startDate = '', endDate = '', ratings = [1, 2, 3, 4, 5], partialTitle = '', director = ''): Promise<void | PostWithPages> {
+  getPosts(page = 1, startDate = '', endDate = '', ratings = [1, 2, 3, 4, 5], partialTitle = '', director = '', award = ''): Promise<void | PostWithPages> {
     const options = {
       params: new HttpParams().set('limit', LIMIT.toString()).set('page', page.toString())
-        .set('startDate', startDate).set('endDate', endDate).set('ratings', ratings.toString()).set('partialTitle', partialTitle).set('director', director)
+        .set('startDate', startDate).set('endDate', endDate).set('ratings', ratings.toString()).set('partialTitle', partialTitle).set('director', director).set('award', award)
     };
     return this.http.get<PostWithPages>(this.postsUrl, options)
       .toPromise()

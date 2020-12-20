@@ -30,6 +30,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   filterRatings = [1, 2, 3, 4, 5];
   partialTitle = '';
   filterDirector = '';
+  filterAward = '';
   scrollpositionY = 1000;
   scrollpositionX = 0;
 
@@ -41,9 +42,9 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   }
   ngOnChanges() {
     //console.log('ngOnChanges');
-    this.scrollpositionX = this.viewportScroller.getScrollPosition()[0];
-    this.scrollpositionY = this.viewportScroller.getScrollPosition()[1];
-    console.log("storing position " + this.scrollpositionX + "/" + this.scrollpositionY);
+    //this.scrollpositionX = this.viewportScroller.getScrollPosition()[0];
+    //this.scrollpositionY = this.viewportScroller.getScrollPosition()[1];
+    //console.log("storing position " + this.scrollpositionX + "/" + this.scrollpositionY);
   }
   ngAfterViewChecked() {
     //console.log('ngAfterViewChecked');
@@ -77,6 +78,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
     this.filterRatings = filterCriteria.ratings;
     this.partialTitle = filterCriteria.partialTitle;
     this.filterDirector = filterCriteria.director;
+    this.filterAward = filterCriteria.award;
     this.reloadPosts();
   }
 
@@ -85,7 +87,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
     this.scrollpositionX = 0;
     this.scrollpositionY = 0;
     this.postService
-      .getPosts(page + 1, this.filterStartDate, this.filterEndDate, this.filterRatings, this.partialTitle, this.filterDirector)
+      .getPosts(page + 1, this.filterStartDate, this.filterEndDate, this.filterRatings, this.partialTitle, this.filterDirector, this.filterAward)
       .then((postWithPages: PostWithPages) => {
         if (Array.isArray(postWithPages.posts)) {
           this.posts = postWithPages.posts.map((post) => {
@@ -170,6 +172,13 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   selectDirector = (director: string) => {
     console.log("select director");
     this.filterDirector = director;
+    this.reloadPosts();
+    this.selectPost(null);
+  }
+
+  selectAward = (award: string) => {
+    console.log("select award");
+    this.filterAward = award;
     this.reloadPosts();
     this.selectPost(null);
   }

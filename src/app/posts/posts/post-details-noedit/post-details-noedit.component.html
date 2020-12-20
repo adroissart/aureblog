@@ -26,7 +26,7 @@
     <div class="form-group">
       <label for="post-awards">Awards : </label>
       <button *ngFor="let award of post.awards" type="button" class="btn btn-outline-primary btn-sm"
-        disabled>{{award}}</button>
+        (click)="doAward(award)">{{award}}</button>
     </div>
   </div>
 </div>
