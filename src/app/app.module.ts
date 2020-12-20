@@ -8,6 +8,7 @@ import { PostDetailsNoEditComponent } from './posts/posts/post-details-noedit/po
 import { PostListComponent } from './posts/posts/post-list/post-list.component';
 import { LoginComponent } from './login/login.component';
 import { RatingViewerComponent } from './rating-viewer/rating-viewer.component';
+import { AwardViewerComponent } from './award-viewer/award-viewer.component';
 import { FilterComponent } from './posts/filter/filter.component';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
@@ -21,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     PostListComponent,
     LoginComponent,
     RatingViewerComponent,
+    AwardViewerComponent,
     FilterComponent
   ],
   imports: [

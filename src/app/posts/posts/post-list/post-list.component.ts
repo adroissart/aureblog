@@ -2,10 +2,12 @@ import { Component, Input, OnInit, AfterViewChecked, AfterContentChecked, OnChan
 import { Post } from '../post';
 import { PostService, PostWithPages } from '../post.service';
 import { RatingViewerComponent } from '../../../rating-viewer/rating-viewer.component';
+import { AwardViewerComponent } from '../../../award-viewer/award-viewer.component';
 import { PostDetailsComponent } from '../post-details/post-details.component';
 import { PostDetailsNoEditComponent } from '../post-details-noedit/post-details-noedit.component';
 import { AuthService } from '../../../auth.service';
 import { ViewportScroller } from '@angular/common';
+
 
 @Component({
   selector: 'app-post-list',
@@ -27,26 +29,27 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   filterEndDate = '9999-12-31';
   filterRatings = [1, 2, 3, 4, 5];
   partialTitle = '';
+  filterDirector = '';
   scrollpositionY = 1000;
   scrollpositionX = 0;
 
   constructor(private authService: AuthService, private postService: PostService, private viewportScroller: ViewportScroller) { }
 
   ngOnInit() {
-    console.log('PostListComponent::ngOnInit: start');
+    //console.log('PostListComponent::ngOnInit: start');
     this.authService.currentUserData.subscribe((message: string) => this.handleLoginEvent(message));
   }
   ngOnChanges() {
-    console.log('ngOnChanges');
+    //console.log('ngOnChanges');
     this.scrollpositionX = this.viewportScroller.getScrollPosition()[0];
     this.scrollpositionY = this.viewportScroller.getScrollPosition()[1];
     console.log("storing position " + this.scrollpositionX + "/" + this.scrollpositionY);
   }
   ngAfterViewChecked() {
-    console.log('ngAfterViewChecked');
+    //console.log('ngAfterViewChecked');
   }
   ngAfterContentChecked() {
-    console.log('ngAfterContentChecked');
+    //console.log('ngAfterContentChecked');
   }
 
   private errorhandling(error) {
@@ -73,6 +76,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
     this.filterEndDate = filterCriteria.endDate;
     this.filterRatings = filterCriteria.ratings;
     this.partialTitle = filterCriteria.partialTitle;
+    this.filterDirector = filterCriteria.director;
     this.reloadPosts();
   }
 
@@ -81,7 +85,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
     this.scrollpositionX = 0;
     this.scrollpositionY = 0;
     this.postService
-      .getPosts(page + 1, this.filterStartDate, this.filterEndDate, this.filterRatings, this.partialTitle)
+      .getPosts(page + 1, this.filterStartDate, this.filterEndDate, this.filterRatings, this.partialTitle, this.filterDirector)
       .then((postWithPages: PostWithPages) => {
         if (Array.isArray(postWithPages.posts)) {
           this.posts = postWithPages.posts.map((post) => {
@@ -125,9 +129,9 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
       imageurl: '',
       country: '',
       year: 0,
-      directors: [''],
-      awards: [''],
-      tags: [''],
+      directors: [] as string[],
+      awards: [] as string[],
+      tags: [] as string[],
       allocineid: 0
     };
 
@@ -161,6 +165,13 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
     }
     this.selectPost(null);
     return this.posts;
+  }
+
+  selectDirector = (director: string) => {
+    console.log("select director");
+    this.filterDirector = director;
+    this.reloadPosts();
+    this.selectPost(null);
   }
 
   onLogin() {

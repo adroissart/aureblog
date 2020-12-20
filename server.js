@@ -180,7 +180,7 @@ app.get('/api/logout', function (req, res) {
  */
 
 app.get("/api/posts", isAuth, async function (req, res) {
-  let { page = 1, limit = 10, startDate = "0001-01-01", endDate = '9999-12-31', ratings = '1, 2, 3, 4, 5', partialTitle = '' } = req.query;
+  let { page = 1, limit = 10, startDate = "0001-01-01", endDate = '9999-12-31', ratings = '1, 2, 3, 4, 5', partialTitle = '', director = '' } = req.query;
   let nbPages;
   if (endDate == '') {
     endDate = '9999-12-31'
@@ -204,7 +204,17 @@ app.get("/api/posts", isAuth, async function (req, res) {
     //    // get total documents in the Posts collection 
     //    const count = await Post.countDocuments();
     // , $lte: endDate
-    Post.paginate({ date: { $gte: startDate }, rating: { $in: ratingsArray }, title: { $regex: partialTitle, $options: 'i' } }, options, function (err, result) {
+    // date: { $gte: startDate },
+    let queryParams = { rating: { $in: ratingsArray } };
+    let dateParams = { $gte: startDate };
+    dateParams.$lte = endDate;
+    let titleParams = { $regex: partialTitle, $options: 'i' };
+    if (director !== '') {
+      queryParams.directors = director;
+    }
+    queryParams.date = dateParams;
+    queryParams.title = titleParams;
+    Post.paginate(queryParams, options, function (err, result) {
       posts = result.docs;
       nbPages = result.totalPages;
       console.log(posts);

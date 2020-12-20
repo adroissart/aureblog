@@ -11,7 +11,7 @@
                             data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
                             filters: {{partialTitle === '' ? '' : 'title like \"'+partialTitle+'\",' }} viewed from
                             {{startDate}} to
-                            {{endDate}}, ratings {{ratings}}
+                            {{endDate}}, ratings {{ratings}}, {{director === '' ? '' : 'directed by \"'+director+'\"' }}
                         </button>
                     </h2>
                 </div>
@@ -28,6 +28,17 @@
                             </div>
                             <input type="text" class="form-control" placeholder="Title" aria-label="Title"
                                 aria-describedby="button-addon2" name='partialTitle' [(ngModel)]="partialTitle"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="director">Director</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Title" aria-label="Director"
+                                aria-describedby="button-addon2" name='director' [(ngModel)]="director"
                                 [ngModelOptions]="{standalone: true}">
                         </div>
                     </div>

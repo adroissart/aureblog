@@ -12,6 +12,13 @@ export class PostDetailsNoEditComponent {
   @Input()
   post: Post;
 
+  @Input()
+  selectDirector: Function;
+
   constructor(private postService: PostService) { }
 
+  doDirector() {
+    console.log("select director in post details");
+    this.selectDirector(this.post.directors[0]);
+  }
 }

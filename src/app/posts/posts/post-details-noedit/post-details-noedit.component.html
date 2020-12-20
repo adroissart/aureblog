@@ -3,7 +3,8 @@
     <img src="{{post.imageurl || 'assets/images/movie.jpg'}}" class="w-100" alt="...">
   </div>
   <div class="col-md-9">
-    <h5>{{post.title}} <small>{{post.directors}} ({{post.year}},{{post.country}})</small>
+    <h5>{{post.title}} <small><button class="btn btn-link" (click)="doDirector()">{{post.directors}}</button>
+        ({{post.year}},{{post.country}})</small>
       <app-rating-viewer [rating]=post.rating></app-rating-viewer>
     </h5>
     <p>

@@ -7,9 +7,9 @@ export class Post {
     rating: number;
     imageurl: string;
     country: string;
-    directors: [string];
-    awards: [string];
+    directors: string[];
+    awards: string[];
     year: number;
-    tags: [string];
+    tags: string[];
     allocineid: number;
 }

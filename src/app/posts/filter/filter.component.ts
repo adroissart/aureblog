@@ -7,11 +7,12 @@ import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@ang
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
-  @Output() filterRequested = new EventEmitter<{ startDate: string, endDate: string, ratings: [string], partialTitle: string }>();
+  @Output() filterRequested = new EventEmitter<{ startDate: string, endDate: string, ratings: [string], partialTitle: string, director: string }>();
   @Input() startDate: string;
   @Input() endDate: string;
   @Input() ratings: [string];
   @Input() partialTitle: string;
+  @Input() director: string;
   form: FormGroup;
   toto = [
     { id: 0, name: 'unrated' },
@@ -47,7 +48,7 @@ export class FilterComponent implements OnInit {
     this.ratings = this.form.value.ratings
       .map((checked, i) => checked ? this.toto[i].id : null)
       .filter(v => v !== null);
-    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle });
+    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director });
   }
 
 }
