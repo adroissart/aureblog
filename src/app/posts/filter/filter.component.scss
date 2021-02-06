@@ -1,8 +1,8 @@
-.card-header .btn:before { 
-    content: "- ";
-    float: left; 
+.card-header .filt:before {
+  content: "- ";
+  float: left;
 }
-.card-header .btn.collapsed:before {
-    /* symbol for "collapsed" panels */
-    content: "+ "; 
+.card-header .filt.collapsed:before {
+  /* symbol for "collapsed" panels */
+  content: "+ ";
 }

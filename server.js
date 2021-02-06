@@ -176,7 +176,10 @@ app.get('/api/logout', function (req, res) {
 // functional apis
 /*  "/api/posts"
  *    GET: finds all posts
- *    POST: creates a new contact
+ *    POST: creates a new post
+ *  "/api/articles"
+ *    GET
+ *    POST
  */
 
 app.get("/api/posts", isAuth, async function (req, res) {

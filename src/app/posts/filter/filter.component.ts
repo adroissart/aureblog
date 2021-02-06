@@ -23,6 +23,7 @@ export class FilterComponent implements OnInit {
     { id: 4, name: '4' },
     { id: 5, name: '5' }
   ];
+  filterLabels = ['bibi','baba'];
 
   constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
@@ -33,6 +34,7 @@ export class FilterComponent implements OnInit {
 
   ngOnInit() {
     console.log('FilterComponent::ngOnInit: start');
+    this.filterLabels = this.getFilterLabels();
   }
 
   get ratingsFormArray() {
@@ -50,11 +52,35 @@ export class FilterComponent implements OnInit {
       .map((checked, i) => checked ? this.toto[i].id : null)
       .filter(v => v !== null);
     this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director, award: this.award });
+    this.filterLabels = this.getFilterLabels();
   }
 
   reinit() {
     console.log('reinit filters');
-    this.filterRequested.emit({ startDate: '1900-01-01', endDate: '9990-12-31', ratings: ['1', '2', '3', '4', '5'], partialTitle: '', director: '', award: '' });
+    this.startDate = '1900-01-01';
+    this.endDate = '9990-12-31';
+    this.ratings = ['1', '2', '3', '4', '5'];
+    this.partialTitle = '';
+    this.director = '';
+    this.award = '';
+    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director, award: this.award });
+    this.filterLabels = this.getFilterLabels();
+  }
+
+  getFilterLabels() {
+    let labels = []
+    if (this.partialTitle !== '') {
+      labels.push('title like '+this.partialTitle);
+    }
+    labels.push('viewed from '+this.startDate+' to '+this.endDate);
+    labels.push('ratings '+this.ratings);
+    if (this.director !== '') {
+      labels.push('directed by '+this.director);
+    }
+    if (this.award !== '') {
+      labels.push('awarded at '+this.award);
+    }
+    return labels;
   }
 
 }
