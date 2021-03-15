@@ -11,7 +11,7 @@
                             data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
                             <button type="button" class="btn btn-outline-secondary" *ngFor="let label of filterLabels">{{label}}</button>
                         </div>
-                        <div class="text-left">
+                        <div *ngIf="reinitEnabled" class="text-left">
                             <button class="btn btn-outline-primary" (click)="reinit()">X reinit</button>
                         </div>
                     </h2>
@@ -20,7 +20,7 @@
         </div>
         <div class="collapse" id="collapseFilters" aria-labelledby="headingOne" data-parent="#accordionExample">
             <div class="card-body">
-                <form [formGroup]="form" (ngSubmit)="applyFilter()">
+                <form [formGroup]="form">
                     <div class="form-row">
                         <label for="partialTitle">Title</label>
                         <div class="input-group mb-3">
@@ -57,7 +57,7 @@
                             <label>Ratings : </label>
                             <label formArrayName="ratings"
                                 *ngFor="let rating of ratingsFormArray.controls; let i = index">
-                                <input type="checkbox" [formControlName]="i">
+                                <input type="checkbox" [checked]="rating.value" [formControlName]="i">
                                 {{toto[i].name}}
                             </label>
                         </div>

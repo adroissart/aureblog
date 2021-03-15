@@ -31,6 +31,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   partialTitle = '';
   filterDirector = '';
   filterAward = '';
+  reinitEnabled = false;
   scrollpositionY = 1000;
   scrollpositionX = 0;
 
@@ -79,6 +80,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
     this.partialTitle = filterCriteria.partialTitle;
     this.filterDirector = filterCriteria.director;
     this.filterAward = filterCriteria.award;
+    this.reinitEnabled = filterCriteria.reinitEnabled;
     this.reloadPosts();
   }
 
@@ -172,6 +174,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   selectDirector = (director: string) => {
     console.log("select director");
     this.filterDirector = director;
+    this.reinitEnabled = true;
     this.reloadPosts();
     this.selectPost(null);
   }
@@ -179,6 +182,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   selectAward = (award: string) => {
     console.log("select award");
     this.filterAward = award;
+    this.reinitEnabled = true;
     this.reloadPosts();
     this.selectPost(null);
   }

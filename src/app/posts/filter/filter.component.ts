@@ -7,13 +7,14 @@ import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@ang
   styleUrls: ['./filter.component.scss']
 })
 export class FilterComponent implements OnInit {
-  @Output() filterRequested = new EventEmitter<{ startDate: string, endDate: string, ratings: string[], partialTitle: string, director: string, award: string }>();
+  @Output() filterRequested = new EventEmitter<{ startDate: string, endDate: string, ratings: string[], partialTitle: string, director: string, award: string, reinitEnabled: boolean }>();
   @Input() startDate: string;
   @Input() endDate: string;
   @Input() ratings: string[];
   @Input() partialTitle: string;
   @Input() director: string;
   @Input() award: string;
+  @Input() reinitEnabled: boolean;
   form: FormGroup;
   toto = [
     { id: 0, name: 'unrated' },
@@ -24,16 +25,17 @@ export class FilterComponent implements OnInit {
     { id: 5, name: '5' }
   ];
   filterLabels = ['bibi','baba'];
+  
 
   constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
       ratings: new FormArray([])
     });
     this.addCheckboxes();
+    this.reinitEnabled = false;
   }
 
   ngOnInit() {
-    console.log('FilterComponent::ngOnInit: start');
     this.filterLabels = this.getFilterLabels();
   }
 
@@ -51,7 +53,8 @@ export class FilterComponent implements OnInit {
     this.ratings = this.form.value.ratings
       .map((checked, i) => checked ? this.toto[i].id : null)
       .filter(v => v !== null);
-    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director, award: this.award });
+    this.reinitEnabled = true;
+    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director, award: this.award, reinitEnabled: this.reinitEnabled });
     this.filterLabels = this.getFilterLabels();
   }
 
@@ -60,10 +63,16 @@ export class FilterComponent implements OnInit {
     this.startDate = '1900-01-01';
     this.endDate = '9990-12-31';
     this.ratings = ['1', '2', '3', '4', '5'];
+    let counter=0;
+    this.ratingsFormArray.controls.forEach(element => {
+      element.setValue(counter!=0);
+      counter++;
+    });
     this.partialTitle = '';
     this.director = '';
     this.award = '';
-    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director, award: this.award });
+    this.reinitEnabled = false;
+    this.filterRequested.emit({ startDate: this.startDate, endDate: this.endDate, ratings: this.ratings, partialTitle: this.partialTitle, director: this.director, award: this.award, reinitEnabled: this.reinitEnabled });
     this.filterLabels = this.getFilterLabels();
   }
 

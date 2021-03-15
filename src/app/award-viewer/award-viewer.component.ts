@@ -13,7 +13,7 @@ export class AwardViewerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('AwardComponent::ngOnInit: start');
+//    console.log('AwardComponent::ngOnInit: start');
   }
   getImage(award: string) {
     return "assets/images/" + award.replace(/,/g, '') + ".jpg";

@@ -13,7 +13,7 @@ export class RatingViewerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('RatingComponent::ngOnInit: start');
+//    console.log('RatingComponent::ngOnInit: start');
   }
 
 }
