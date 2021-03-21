@@ -3,21 +3,17 @@
     <img src="{{post.imageurl || 'assets/images/movie.jpg'}}" class="w-100" alt="...">
   </div>
   <div class="col-md-9">
-    <h5>{{post.title}} <small><button class="btn btn-link" (click)="doDirector()">{{post.directors}}</button>
-        ({{post.year}},{{post.country}})</small>
-      <app-rating-viewer [rating]=post.rating></app-rating-viewer>
-    </h5>
-    <p>
-
-      <span *ngIf="post.allocineid > 0"><a
-          href="https://www.allocine.fr/film/fichefilm_gen_cfilm={{post.allocineid}}.html"
-          target="_blank">allocine</a></span>
-      <br />
-      <small class="text-muted">vu le {{post.date}} a {{post.place}}</small><br />
-      <span>{{post.content}}</span>
-
-    </p>
-
+    <div class="title">{{post.title}} <app-rating-viewer [rating]=post.rating></app-rating-viewer></div> 
+    <div class="details">
+      <a [routerLink]="" (click)="doDirector()">{{post.directors}}</a>, 
+      {{post.year}}, {{post.country}} <span *ngIf="post.allocineid > 0"><a
+        href="https://www.allocine.fr/film/fichefilm_gen_cfilm={{post.allocineid}}.html"
+        target="_blank"><img height=24 src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Allocin%C3%A9_Logo_carr%C3%A9.png"/></a></span>
+      </div>
+    <div class="details">
+      vu le {{post.date}} a {{post.place}}
+    </div>
+    <div class="content"><span>{{post.content}}</span></div>
     <div class="form-group">
       <label for="post-tags">Tags : </label>
       <button *ngFor="let tag of post.tags" type="button" class="btn btn-outline-primary btn-sm"
@@ -28,5 +24,6 @@
       <button *ngFor="let award of post.awards" type="button" class="btn btn-outline-primary btn-sm"
         (click)="doAward(award)">{{award}}</button>
     </div>
+    <app-award-viewer [awards]=post.awards></app-award-viewer>
   </div>
 </div>
