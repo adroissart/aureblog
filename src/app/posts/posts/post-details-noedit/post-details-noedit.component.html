@@ -14,16 +14,15 @@
       vu le {{post.date}} a {{post.place}}
     </div>
     <div class="content"><span>{{post.content}}</span></div>
-    <div class="form-group">
-      <label for="post-tags">Tags : </label>
+    <div *ngIf="post.tags.length !== 0" class="form-group">
       <button *ngFor="let tag of post.tags" type="button" class="btn btn-outline-primary btn-sm"
         disabled>{{tag}}</button>
     </div>
-    <div class="form-group">
-      <label for="post-awards">Awards : </label>
+    <div  *ngIf="post.awards.length !== 0" class="form-group">
       <button *ngFor="let award of post.awards" type="button" class="btn btn-outline-primary btn-sm"
         (click)="doAward(award)">{{award}}</button>
+        <app-award-viewer [awards]=post.awards></app-award-viewer>
     </div>
-    <app-award-viewer [awards]=post.awards></app-award-viewer>
+    
   </div>
 </div>

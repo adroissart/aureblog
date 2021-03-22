@@ -18,7 +18,10 @@ export class PostDetailsNoEditComponent {
   selectAward: Function;
 
   constructor(private postService: PostService) { }
-
+  ngOnInit() {
+    console.log('noedit init');
+    console.log(this.post);
+  }
   doDirector() {
     console.log("select director in post details");
     this.selectDirector(this.post.directors[0]);
