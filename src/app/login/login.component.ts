@@ -28,6 +28,10 @@ export class LoginComponent implements OnInit {
     this.userName = 'loading';
   }
 
+  isActive(myroute: string) {
+
+  }
+
   updateLoginInfo(message: string) {
     const user: NiceUser = JSON.parse(message);
     this.userName = user.username;
@@ -61,5 +65,13 @@ export class LoginComponent implements OnInit {
         });
     });
 
+  }
+
+  isRoute(inRoute: string): boolean {
+    console.log('route is '+this.router.url);
+    if (this.router.url === inRoute) {
+      return true;
+    }
+    return false;
   }
 }

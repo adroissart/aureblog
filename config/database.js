@@ -37,5 +37,25 @@ const postSchema = new mongoose.Schema({
 postSchema.plugin(mongoosePaginate);
 const Post = mongoose.model('Post', postSchema);
 
+const tripSchema = new mongoose.Schema({
+    title: String,
+    date: String,
+    summary: String,
+    imageurl: String,
+    country: [String],
+    steps: [{ 
+        title: String,
+        imageurl: String,
+        body: String, 
+        date: Date,
+        longitude: String,
+        latitude: String,
+        accomodation: String,
+        duration: String 
+    }],
+});
+tripSchema.plugin(mongoosePaginate);
+const Trip = mongoose.model('Trip', tripSchema);
+
 // Expose the connection
 module.exports = mongoose;

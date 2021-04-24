@@ -3,13 +3,12 @@
         <div class="card-header" id="headingOne">
             <div class="row">
                 <div class="col-md-3">
-                    <h2>Reviews</h2>
+                    <h2>Movies</h2>
                 </div>
                 <div class="col-md-9 d-flex justify-content-start">
                     <h2 class="mb-0">
-                        <div class="text-left collapsed" data-toggle="collapse"
-                            data-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
-                            <button type="button" class="btn btn-outline-secondary" *ngFor="let label of filterLabels">{{label}}</button>
+                        <div class="text-left">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters" *ngFor="let label of filterLabels">{{label}}</button>
                         </div>
                         <div *ngIf="reinitEnabled" class="text-left">
                             <button class="btn btn-outline-primary" (click)="reinit()">X reinit</button>
@@ -18,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="collapse" id="collapseFilters" aria-labelledby="headingOne" data-parent="#accordionExample">
+        <div class="collapse" id="collapseFilters">
             <div class="card-body">
                 <form [formGroup]="form">
                     <div class="form-row">

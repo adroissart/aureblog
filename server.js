@@ -6,6 +6,7 @@ const MongoStore = require('connect-mongo')(expressSession);
 const mongoose = require('./config/database');
 const User = mongoose.models.User;
 const Post = mongoose.models.Post;
+const Trip = mongoose.models.Trip;
 db = mongoose.connection;
 
 
@@ -22,7 +23,7 @@ app.use(express.static(distDir));
 
 
 app.use(expressSession({
-  secret: "cats",
+  secret: process.env.PASSPORT_SECRET,
   resave: false,
   saveUninitialized: false,
   store: sessionStore,
@@ -177,9 +178,9 @@ app.get('/api/logout', function (req, res) {
 /*  "/api/posts"
  *    GET: finds all posts
  *    POST: creates a new post
- *  "/api/articles"
- *    GET
- *    POST
+ *    GET/id
+ *    PUT/id
+ *    DELETE/id
  */
 
 app.get("/api/posts", isAuth, async function (req, res) {
@@ -288,6 +289,109 @@ app.delete("/api/posts/:id", async function (req, res) {
     res.status(500).send(err)
   }
 });
+//////////////////////////////////////////////////////
+// functional apis
+/*  "/api/trips"
+ *    GET: finds all posts
+ *    POST: creates a new post
+ *    GET/id
+ *    PUT/id
+ *    DELETE/id
+ */
+
+app.get("/api/trips", isAuth, async function (req, res) {
+  let { page = 1, limit = 10, startDate = "0001-01-01", endDate = '9999-12-31',  duration = 0, countries = '' } = req.query;
+  let nbPages;
+  if (endDate == '') {
+    endDate = '9999-12-31'
+  }
+  const countriesArray = countries.split(',');
+  console.log("entering get api/trips for page " + page + " and limit " + limit + "and startDate " + startDate + " and endDate " + endDate + " and duration " + duration + " and countries " + countries);
+  const options = {
+    page: page,
+    limit: limit,
+    //    collation: {
+    //      locale: 'en'
+    //    }
+    sort: { 'date': -1, 'title': 1 },
+  };
+  try {
+    let queryParams = {};
+    if (countriesArray.length > 0) {
+      queryParams.country = { $in: countriesArray } 
+    };
+    let dateParams = { $gte: startDate };
+    dateParams.$lte = endDate;
+//    if (duration > 0) {
+//      queryParams.duration = duration;
+//    }
+    queryParams.date = dateParams;
+    Trip.paginate(queryParams, options, function (err, result) {
+      posts = result.docs;
+      nbPages = result.totalPages;
+      console.log(posts);
+      res.status(200).json({
+        posts,
+        nbPages: nbPages, //Math.ceil(count / limit),
+        currentPage: parseInt(page)
+      });
+    });
+
+  }
+  catch (err) {
+    handleError(res, err.message, "Failed to get trips.");
+  }
+});
+
+
+app.post("/api/trip", async function (req, res) {
+  console.log("the title is" + req.body.title);
+  const trip = new Trip(req.body);
+
+  try {
+    await trip.save();
+    res.status(201).send(trip);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+/*  "/api/posts/:id"
+ *    GET: find contact by id
+ *    PUT: update contact by id
+ *    DELETE: deletes contact by id
+ */
+
+app.get("/api/trips/:id", async function (req, res) {
+  console.log("getting single trip ");
+  try {
+    const trip = await Trip.findById(req.params.id)
+    res.status(200).json(trip);
+  } catch (err) {
+    res.status(500).send(err)
+  }
+});
+
+app.put("/api/trips/:id", async function (req, res) {
+  console.log("updating single trip " + req.body.title);
+  try {
+    await Trip.findByIdAndUpdate(req.params.id, req.body)
+    res.send("updated")
+  } catch (err) {
+    res.status(500).send(err)
+  }
+});
+
+app.delete("/api/trips/:id", async function (req, res) {
+  console.log("deleting single trip " + req.params.id);
+  try {
+    await Trip.findByIdAndDelete(req.params.id)
+    res.json(req.params.id);
+  } catch (err) {
+    res.status(500).send(err)
+  }
+});
+
 //////////////////////////////////////////////////
 // posts API ROUTES BELOW
 app.get('/*', function (req, res) {

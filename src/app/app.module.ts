@@ -13,6 +13,9 @@ import { FilterComponent } from './posts/filter/filter.component';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // this is needed!
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TripListComponent } from './trip-list/trip-list.component';
+import { DevListComponent } from './dev/dev-list/dev-list.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     RatingViewerComponent,
     AwardViewerComponent,
-    FilterComponent
+    FilterComponent,
+    TripListComponent,
+    DevListComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,

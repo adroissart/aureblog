@@ -38,6 +38,10 @@ export class FilterComponent implements OnInit {
   ngOnInit() {
     this.filterLabels = this.getFilterLabels();
   }
+  ngOnChanges() {
+    console.log('changed:'+this.director);
+    this.filterLabels = this.getFilterLabels();
+  }
 
   get ratingsFormArray() {
     return this.form.controls.ratings as FormArray;
@@ -77,6 +81,7 @@ export class FilterComponent implements OnInit {
   }
 
   getFilterLabels() {
+    console.log('getFilterLabels');
     let labels = []
     if (this.partialTitle !== '') {
       labels.push('title like '+this.partialTitle);

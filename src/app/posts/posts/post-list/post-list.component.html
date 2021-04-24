@@ -1,5 +1,6 @@
+
 <div class="row" *ngIf="isLoggedIn; else elseBlock">
-  <div class="col-md-12" *ngIf="!selectedPost">
+  <div class="col-md-12">
     <div class="row">
       <div class="col-md-12">
         <app-filter (filterRequested)="filterPosts($event)" [startDate]="filterStartDate" [endDate]="filterEndDate"
@@ -13,51 +14,58 @@
         <nav aria-label="Post Pagination">
           <ul class="pagination flex-wrap">
             <li class="page-item" [ngClass]="{'disabled' : currentPage <= 1}">
-              <a class="page-link" href="#" (click)="reloadPosts(currentPage - 2)">Previous</a>
+              <a class="page-link" [routerLink]="" (click)="reloadPosts(currentPage - 2)">Previous</a>
             </li>
             <ng-container *ngFor="let item of [].constructor(nbPages); let i = index">
               <li *ngIf="isVisible(i,currentPage,nbPages)"
                 [ngClass]="{'page-item' : true, 'active' : (i+1)==currentPage }">
-                <a class="page-link" href="#" (click)="reloadPosts(i)">{{i+1}}</a>
+                <a class="page-link" [routerLink]="" (click)="reloadPosts(i)">{{i+1}}</a>
               </li>
               <li class="page-item disabled" *ngIf="isVisiblePointPoint(i,currentPage,nbPages)"><a
                   class="page-link">...</a></li>
             </ng-container>
             <li class="page-item" [ngClass]="{'disabled' : nbPages==currentPage}">
-              <a class="page-link" href="#" (click)="reloadPosts(currentPage)">Next</a>
+              <a class="page-link" [routerLink]="" (click)="reloadPosts(currentPage)">Next</a>
             </li>
           </ul>
         </nav>
-        <div class="row card-group">
-          <div class="col-md-12" *ngFor="let post of posts" (click)="selectPost(post)">
-            <div class="media mb-1">
-              <img src="{{post.imageurl || 'assets/images/movie.jpg'}}" width="64px" class="mr-3" alt="image">
-              <div class="media-body">
-                <h5 class="mt-0">{{post.title}} ({{post.directors}}, {{post.year}})<app-rating-viewer
-                    [rating]=post.rating>
-                  </app-rating-viewer>
-                  <small><i> vu le {{post.date}}</i></small>
-                </h5>
-                <app-award-viewer [awards]=post.awards></app-award-viewer>
+        <div class="overflowy" height="100px">
+          <div *ngFor="let post of posts; trackBy: postsTrackBy">
+          <div class="card mb-1"  (click)="selectPost(post)" *ngIf="selectedPost !== post">
+            <div class="row g-0">
+              <div class="col-md-1">
+                <img src="{{post.imageurl || 'assets/images/movie.jpg'}}" width="64px" class="mr-0" alt="image">
+              </div>
+              <div class="col-md-11">
+                <div class="media-body">
+                  <h6 class="mt-0">{{post.title}} ({{post.directors}}, {{post.year}})<app-rating-viewer
+                      [rating]=post.rating>
+                    </app-rating-viewer>
+                    <small><i> vu le {{post.date}}</i></small>
+                  </h6>
+                  <app-award-viewer [awards]=post.awards></app-award-viewer>
+                </div>
               </div>
             </div>
+          </div>
+          <div class="col-md-12 mb-1" *ngIf="selectedPost === post" (click)="unselectPost()">
+            <!--<button class="btn btn-secondary mt-1 mb-1" (click)="unselectPost()">back</button>-->
+            <div *ngIf="isEdit; else detailsElseBlock">
+              <app-post-details [post]="selectedPost" [createHandler]="addPost" [updateHandler]="updatePost"
+                [deleteHandler]="deletePost">
+              </app-post-details>
+            </div>
+            <ng-template #detailsElseBlock>
+              <app-post-details-noedit [post]="selectedPost" [selectDirector]="selectDirector" [selectAward]="selectAward">
+              </app-post-details-noedit>
+            </ng-template>
+          </div>
           </div>
         </div>
         <button *ngIf="isEdit" class="btn btn-primary mt-1" (click)="createNewPost()">New</button>
       </div>
     </div>
   </div>
-  <div class="col-md-12" *ngIf="selectedPost">
-    <button class="btn btn-secondary mt-1 mb-1" (click)="unselectPost()">back</button>
-    <div *ngIf="isEdit; else detailsElseBlock">
-      <app-post-details [post]="selectedPost" [createHandler]="addPost" [updateHandler]="updatePost"
-        [deleteHandler]="deletePost">
-      </app-post-details>
-    </div>
-    <ng-template #detailsElseBlock>
-      <app-post-details-noedit [post]="selectedPost" [selectDirector]="selectDirector" [selectAward]="selectAward">
-      </app-post-details-noedit>
-    </ng-template>
-  </div>
+  
 </div>
 <ng-template #elseBlock>nothing to display</ng-template>

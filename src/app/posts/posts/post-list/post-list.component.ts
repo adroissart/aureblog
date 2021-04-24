@@ -57,6 +57,8 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   private errorhandling(error) {
   }
 
+  postsTrackBy(index: number, post: Post) { return post._id; }
+
   handleLoginEvent(message: string) {
     console.log('postlistcomponent::handleloginevent : message is ' + message);
     const newUser: NiceUser = JSON.parse(message);
@@ -73,7 +75,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
 
   filterPosts(filterCriteria: any) {
     console.log('filterStartDate is ' + filterCriteria.startDate + ' filterEndDate is '
-      + filterCriteria.endDate + ' filterRatings is ' + filterCriteria.ratings + ' partialTitle is ' + filterCriteria.partialTitle);
+      + filterCriteria.endDate + ' filterRatings is ' + filterCriteria.ratings + ' partialTitle is ' + filterCriteria.partialTitle) + ' director is ' + filterCriteria.director;
     this.filterStartDate = filterCriteria.startDate;
     this.filterEndDate = filterCriteria.endDate;
     this.filterRatings = filterCriteria.ratings;
