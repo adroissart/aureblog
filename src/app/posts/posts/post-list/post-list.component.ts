@@ -126,9 +126,10 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   }
 
   createNewPost() {
+    console.log("create new post");
     const post: Post = {
       title: '',
-      date: '',
+      date: new Date().toISOString().slice(0, 10),
       place: '',
       content: '',
       rating: 0,
@@ -140,7 +141,7 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
       tags: [] as string[],
       allocineid: 0
     };
-
+    this.posts.unshift(post);
     // By default, a newly-created contact will have the selected state.
     this.selectPost(post);
   }
@@ -158,8 +159,10 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
   }
 
   addPost = (post: Post) => {
-    this.posts.push(post);
-    this.selectPost(post);
+    console.log("cancel post");
+    alert("created new movie "+post.title);
+    this.reloadPosts();
+    this.selectPost(null);
     return this.posts;
   }
 
@@ -171,6 +174,12 @@ export class PostListComponent implements OnInit, AfterViewChecked, AfterContent
     }
     this.selectPost(null);
     return this.posts;
+  }
+
+  cancelPost = (post : Post )=> {
+    console.log("cancel post");
+    this.posts.splice(this.posts.indexOf(post),1);
+    this.selectPost(null);
   }
 
   selectDirector = (director: string) => {

@@ -19,6 +19,8 @@ export class PostDetailsComponent {
   updateHandler: Function;
   @Input()
   deleteHandler: Function;
+  @Input()
+  cancelHandler: Function;
 
   constructor(private postService: PostService) { }
 
@@ -39,5 +41,9 @@ export class PostDetailsComponent {
     this.postService.deletePost(postId).then((deletedPostId: string) => {
       this.deleteHandler(deletedPostId);
     });
+  }
+
+  cancelPost(post: Post):void {
+    this.cancelHandler(post);
   }
 }

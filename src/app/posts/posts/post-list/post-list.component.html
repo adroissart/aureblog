@@ -45,11 +45,11 @@
               </div>
             </div>
           </div>
-          <div class="col-md-12 mb-1" *ngIf="selectedPost === post" (click)="unselectPost()">
+          <div class="col-md-12 mb-1" *ngIf="selectedPost === post" (click)="isEdit || unselectPost()">
             <!--<button class="btn btn-secondary mt-1 mb-1" (click)="unselectPost()">back</button>-->
             <div *ngIf="isEdit; else detailsElseBlock">
               <app-post-details [post]="selectedPost" [createHandler]="addPost" [updateHandler]="updatePost"
-                [deleteHandler]="deletePost">
+                [deleteHandler]="deletePost" [cancelHandler]="cancelPost">
               </app-post-details>
             </div>
             <ng-template #detailsElseBlock>
