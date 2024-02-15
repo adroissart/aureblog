@@ -7,6 +7,7 @@ const mongoose = require('./config/database');
 const User = mongoose.models.User;
 const Post = mongoose.models.Post;
 const Trip = mongoose.models.Trip;
+const port = process.env.PORT || 3000
 db = mongoose.connection;
 
 
@@ -19,6 +20,11 @@ var app = express();
 app.use(bodyParser.json());
 var distDir = __dirname + "/dist/aureblog";
 app.use(express.static(distDir));
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+})
+
+
 
 
 
