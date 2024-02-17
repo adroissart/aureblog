@@ -21,11 +21,11 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
-//    console.log('LoginComponent::ngOnInit: start');
+    console.log('LoginComponent::ngOnInit: start');
     this.authService.currentUserData.subscribe(message => this.updateLoginInfo(message));
     this.authService.currentErrorMessage.subscribe(message => this.errorMessage = message);
     this.isLoggedIn = false;
-    this.userName = 'loading';
+    this.userName = '';
   }
 
   isActive(myroute: string) {

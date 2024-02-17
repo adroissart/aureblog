@@ -1,3 +1,5 @@
+require('dotenv').config()
+console.log(process.env) // remove this
 var express = require("express");
 var bodyParser = require("body-parser");
 var expressSession = require('express-session');
